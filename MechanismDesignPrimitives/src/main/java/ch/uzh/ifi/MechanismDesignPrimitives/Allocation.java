@@ -7,7 +7,6 @@ import java.util.stream.IntStream;
 /**
  * The allocation class can be used for any general combinatorial exchange setting.
  * @author Dmitry Moor
- *
  */
 public class Allocation 
 {

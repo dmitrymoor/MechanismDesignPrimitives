@@ -7,7 +7,6 @@ import java.util.List;
  * The class defines an allocation data structure for domains with uncertainty.
  * Can be used by all EC- an Exp- mechanisms in the Mechanisms toolbox.
  * @author Dmitry Moor
- *
  */
 public class AllocationEC extends Allocation 
 {
@@ -196,10 +195,7 @@ public class AllocationEC extends Allocation
 	 */
 	public double getExpectedWelfare()
 	{
-		double welfare = 0.;
-		for( Double val : _expectedSocialWelfare )
-			welfare += val;
-		return welfare;
+		return _expectedSocialWelfare.stream().reduce( (x1, x2) -> x1 + x2).get();
 	}
 	
 	protected List<List<Double> > _realizedRVs;					//A list containing realized availabilities of all allocated bundles in a trade
