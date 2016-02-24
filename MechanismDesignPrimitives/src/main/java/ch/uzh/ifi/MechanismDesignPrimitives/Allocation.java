@@ -2,9 +2,10 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
- * Allocation class which can be used for a general combinatorial exchange setting.
+ * The allocation class can be used for any general combinatorial exchange setting.
  * @author Dmitry Moor
  *
  */
@@ -66,10 +67,7 @@ public class Allocation
 	 */
 	public double getAllocatedWelfare()
 	{
-		double welfare = 0.;		
-		for(int i = 0; i < _allocatedAuctioneersValues.size(); ++i)
-			welfare += getTotalAllocatedBiddersValue(i) - _allocatedAuctioneersValues.get(i);
-		return welfare;
+		return IntStream.range(0, _allocatedAuctioneersValues.size()).boxed().map( i -> getTotalAllocatedBiddersValue(i) - _allocatedAuctioneersValues.get(i)).reduce((x1, x2)-> x1+x2).get();
 	}
 	
 	/**
@@ -88,12 +86,11 @@ public class Allocation
 	 * @param auctioneerId - an id of an auctioneer
 	 * @return an index of the auctioneer
 	 */
-	public int getAgentIndexById(int auctioneerId)
+	public int getAuctioneerIndexById(int auctioneerId)
 	{
-		for( int i = 0; i < _allocatedAuctioneersIds.size(); ++i )
-			if( _allocatedAuctioneersIds.get(i) == auctioneerId )
-				return i;
-		throw new RuntimeException("No such an ID=" + auctioneerId + " among allocated agents: " + _allocatedAuctioneersIds.toString() );
+		if(_allocatedAuctioneersIds.indexOf(auctioneerId) > 0)
+			return _allocatedAuctioneersIds.indexOf(auctioneerId);
+		else throw new RuntimeException("No such an ID=" + auctioneerId + " among allocated agents: " + _allocatedAuctioneersIds.toString() );
 	}
 	
 	/**
@@ -123,14 +120,12 @@ public class Allocation
 	 */
 	public boolean isAllocated(int agentId)
 	{
-		for(int id : _allocatedAuctioneersIds)
-			if( id == agentId )
-				return true;
+		if(_allocatedAuctioneersIds.contains(agentId))
+			return true;
 		
 		for(List<Integer> biddersInTrade : _allocatedBiddersIds )
-			for(int id : biddersInTrade)
-				if( id == agentId)
-					return true;
+			if( biddersInTrade.contains(agentId))
+				return true;
 			
 		return false;
 	}
@@ -152,10 +147,7 @@ public class Allocation
 	 */
 	public double getTotalAllocatedBiddersValue(int dealIdx)
 	{
-		double totalValue = 0.;
-		for(Double cost : _allocatedBiddersValues.get(dealIdx))
-			totalValue += cost;
-		return totalValue;
+		return _allocatedBiddersValues.get(dealIdx).stream().reduce((x1, x2) -> x1 + x2).get();
 	}
 	
 	/**
@@ -191,9 +183,9 @@ public class Allocation
 		_allocatedBiddersValues.add(allocatedBiddersValues);
 	}
 	
-	protected List<Integer> _allocatedAuctioneersIds;			//A list of IDs of allocated auctioneers (sellers in a forward auction and buyers in a reverse auction)
-	protected List<List<Integer> > _allocatedBiddersIds;		//A list of IDs of allocated bidders (buyers in a forward auction and sellers in a reverse auction)
-	protected List<Double>  _allocatedAuctioneersValues;		//A list of allocated values of allocated auctioneers
-	protected List<List<Double> > _allocatedBiddersValues;		//A list of allocated costs of allocated bidders
-	protected List<List<Integer> > _allocatedBundles;			//A list of bundle indexes allocated to every winner (an index of the bundle in the bid of the corresponding agent)
+	protected List<Integer> _allocatedAuctioneersIds;           //A list of IDs of allocated auctioneers (sellers in a forward auction and buyers in a reverse auction)
+	protected List<List<Integer> > _allocatedBiddersIds;        //A list of IDs of allocated bidders (buyers in a forward auction and sellers in a reverse auction)
+	protected List<Double>  _allocatedAuctioneersValues;        //A list of allocated values of allocated auctioneers
+	protected List<List<Double> > _allocatedBiddersValues;      //A list of allocated costs of allocated bidders
+	protected List<List<Integer> > _allocatedBundles;           //A list of bundle indexes allocated to every winner (an index of the bundle in the bid of the corresponding agent)
 }
