@@ -24,7 +24,7 @@ public class AtomicBid implements Type
 	public static final String UpperBound = "UpperBound";				//Upper bound for the uniform probability distribution
 	public static final String MinValue = "minValue";					//Minimum possible value of an agent for this atom
 	public static final String MaxValue = "maxValue";					//Maximum possible value of an agent for this atom
-	public static final String Value = "Value";							//A value of a bidder for this atom
+	public static final String Value = "Value";							//A value of a bidder for this atom 
 	
 	private static final Logger _logger = LogManager.getLogger(AtomicBid.class);
 	
