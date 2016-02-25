@@ -3,17 +3,19 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public class MultiUnitAtom extends AtomicBid
 {
 
-	/*
+	/**
 	 * Constructor
 	 * @param agentId - agent's id
 	 * @param items - the list of items
 	 * @param units - list of units of each kind of items
 	 * @param value - the value of the bundle
+	 * @throws Exception 
 	 */
 	public MultiUnitAtom(int agentId, List<Integer> items, List<Integer> units, double value) throws Exception 
 	{
@@ -23,12 +25,13 @@ public class MultiUnitAtom extends AtomicBid
 		_units = units;
 	}
 
-	/*
+	/**
 	 * Constructor
 	 * @param agentId - agent's id
 	 * @param items - the set of items
 	 * @param units - list of units of each kind of items
 	 * @param value - the value of the bundle
+	 * @throws Exception
 	 */
 	public MultiUnitAtom(int agentId, Set<Integer> items, List<Integer> units, double value) throws Exception 
 	{
@@ -38,9 +41,9 @@ public class MultiUnitAtom extends AtomicBid
 		_units = units;
 	}
 	
-	/*
+	/**
 	 * (non-Javadoc)
-	 * @see Mechanisms.AtomicBid#copyIt()
+	 * @see ch.uzh.ifi.MechanismDesignPrimitives.AtomicBid#copyIt()
 	 */
 	@Override
 	public AtomicBid copyIt()
@@ -48,7 +51,7 @@ public class MultiUnitAtom extends AtomicBid
 		AtomicBid bid;
 		try 
 		{
-			bid = new MultiUnitAtom(_agentId, _items, _units, _type.get("Value") );
+			bid = new MultiUnitAtom(_agentId, _items, _units, _type.get(AtomicBid.Value) );
 		} 
 		catch (Exception e) 
 		{
@@ -56,7 +59,7 @@ public class MultiUnitAtom extends AtomicBid
 			throw new RuntimeException("Can't copy the bid " + this.toString());
 		}
 		
-		Iterator it = _type.entrySet().iterator();
+		Iterator<Entry<String, Double> > it = _type.entrySet().iterator();
 		while( it.hasNext() )
 		{
 			Map.Entry<String, Double> pair = (Map.Entry<String, Double>)it.next();
@@ -65,9 +68,9 @@ public class MultiUnitAtom extends AtomicBid
 		return bid;
 	}
 	
-	/*
+	/**
 	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	 * @see ch.uzh.ifi.MechanismDesignPrimitives.AtomicBid#toString()
 	 */
 	@Override
 	public String toString()
@@ -79,24 +82,9 @@ public class MultiUnitAtom extends AtomicBid
 		return str;
 	}
 	
-	/*
-	 * 
-	 */
-	public int getNumberOfUnits(int index)
-	{
-		return _units.get(index);
-	}
-	
-	/*
-	 * 
-	 */
-	public List<Integer> getNumbersOfUnits()
-	{
-		return _units;
-	}
-	
-	/*
-	 * 
+	/**
+	 * (non-Javadoc)
+	 * @see ch.uzh.ifi.MechanismDesignPrimitives.AtomicBid#getNumberOfUnitsByItemId(int)
 	 */
 	@Override
 	public int getNumberOfUnitsByItemId(int itemId)
@@ -108,7 +96,7 @@ public class MultiUnitAtom extends AtomicBid
 				return _units.get(idx);
 			idx += 1;
 		}
-		throw new RuntimeException("no such itemId " + itemId);
+		throw new RuntimeException("No such itemId " + itemId);
 	}
 	
 	private List<Integer> _units;				//The list of numbers of units for every item

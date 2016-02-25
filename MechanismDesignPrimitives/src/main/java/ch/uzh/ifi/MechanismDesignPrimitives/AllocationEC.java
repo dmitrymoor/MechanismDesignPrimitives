@@ -2,6 +2,8 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 /**
  * The class defines an allocation data structure for domains with uncertainty.
@@ -47,14 +49,8 @@ public class AllocationEC extends Allocation
 		_expectedAuctioneersValues.add(auctioneerExpectedValue);
 		_expectedBiddersValues.add(biddersExpectedValues);
 		
-		double sw = auctioneerExpectedValue;
-		for(Double cost : biddersExpectedValues)
-			sw -= cost;
-		
-		if( ! isReverse)
-			sw = -1*sw;
-		
-		_expectedSocialWelfare.add( sw );
+		double sw = auctioneerExpectedValue - biddersExpectedValues.stream().reduce( (x1, x2) -> x1 + x2).get();
+		_expectedSocialWelfare.add( isReverse ? sw : -1*sw );
 	}
 	
 	/**
@@ -96,19 +92,15 @@ public class AllocationEC extends Allocation
 			AtomicBid allocatedBundle = bids.get( bidderId-1 ).getAtom( itsAllocatedAtom );
 			
 			if(numberOfItems <= 0)
-				for(int k = 0; k < allocatedBundle.getInterestingSet().size(); ++k)
-				{
-					int goodId = allocatedBundle.getInterestingSet().get(k);
-					_allocatedAvailabilitiesPerGood.add( goodId );
-					_realizationsOfAvailabilitiesPerGood.add( getRealizedRVsPerGood(0).get(goodId-1));
-				}
+			{
+				_allocatedAvailabilitiesPerGood = IntStream.range(0, allocatedBundle.getInterestingSet().size()).boxed().map( i -> allocatedBundle.getInterestingSet().get(i)).collect(Collectors.toList());
+				_realizationsOfAvailabilitiesPerGood = IntStream.range(0, allocatedBundle.getInterestingSet().size()).boxed().map( i -> getRealizedRVsPerGood(0).get(_allocatedAvailabilitiesPerGood.get(i)-1)).collect(Collectors.toList());
+			}
 			else
-				for(int k = 0; k < numberOfItems; ++k)
-				{
-					int goodId = k+1;
-					_allocatedAvailabilitiesPerGood.add( goodId );
-					_realizationsOfAvailabilitiesPerGood.add(getRealizedRVsPerGood(0).get(k));
-				}
+			{
+				_allocatedAvailabilitiesPerGood = IntStream.range(0, numberOfItems).boxed().map( i -> i+1 ).collect(Collectors.toList());
+				_realizationsOfAvailabilitiesPerGood = IntStream.range(0, numberOfItems).boxed().map( i-> getRealizedRVsPerGood(0).get(i)).collect(Collectors.toList());
+			}
 		}
 	}
 	
@@ -120,8 +112,7 @@ public class AllocationEC extends Allocation
 	 */
 	public List<Double> getRealizationsOfAvailabilitiesPerGood( List<Type> bids, int numberOfItems)
 	{
-		if( _realizationsOfAvailabilitiesPerGood != null )
-			return _realizationsOfAvailabilitiesPerGood;
+		if( _realizationsOfAvailabilitiesPerGood != null )	return _realizationsOfAvailabilitiesPerGood;
 		
 		computeAvailabilitiesPerGood(bids, numberOfItems);
 		return _realizationsOfAvailabilitiesPerGood;
@@ -201,7 +192,7 @@ public class AllocationEC extends Allocation
 	protected List<List<Double> > _realizedRVs;					//A list containing realized availabilities of all allocated bundles in a trade
 	protected List<List<Double> > _realizedRVsPerGood; 			//A list containing realized availabilities of all allocated goods in a trade
 	protected List<Integer> _allocatedAvailabilitiesPerGood;
-	protected List<Double>  _realizationsOfAvailabilitiesPerGood;//TODO: remove this or _realizedRVsPerGood ???
+	protected List<Double>  _realizationsOfAvailabilitiesPerGood;//TODO: remove either this or _realizedRVsPerGood
 	protected List<Double>  _expectedAuctioneersValues;			//A list of expected values of allocated auctioneers
 	protected List<List<Double> > _expectedBiddersValues;		//A list of expected costs of allocated bidders
 	protected List<Double>  _expectedSocialWelfare;				//A list of expected SW contribution for every buyer

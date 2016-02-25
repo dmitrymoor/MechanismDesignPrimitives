@@ -141,12 +141,12 @@ public class Allocation
 	
 	/**
 	 * The method returns the allocated value of a buyer for his trades.
-	 * @param dealIdx - an index of a buyer 
+	 * @param tradeIdx - an index of a buyer 
 	 * @return the total value of a buyer for his trade
 	 */
-	public double getTotalAllocatedBiddersValue(int dealIdx)
+	public double getTotalAllocatedBiddersValue(int tradeIdx)
 	{
-		return _allocatedBiddersValues.get(dealIdx).stream().reduce((x1, x2) -> x1 + x2).get();
+		return _allocatedBiddersValues.get(tradeIdx).stream().reduce((x1, x2) -> x1 + x2).get();
 	}
 	
 	/**
