@@ -142,7 +142,6 @@ public class JointProbabilityMass
 		}
 		//_marginalAvailabilities.put(bundle, marginalProbability / _nSamples);
 		
-		//System.out.println("Add the marginal prob. for the bundle: " + bundle.toString() + " p=" + _marginalAvailabilities.get(bundle));
 		return marginalProbability / numberOfSamples;
 	}
 	
