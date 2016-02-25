@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import ch.uzh.ifi.GraphAlgorithms.Graph;
-import ch.uzh.ifi.GraphAlgorithms.VertexCell;
 
 /**
  * The class implements functionality for modeling joint probability mass functions using the "bombing" approach.
@@ -80,24 +79,6 @@ public class JointProbabilityMass
 		_nSamples = numberOfSamples;
 		_samples = new double[_nSamples][_numberOfRandomVars];
 	}
-	
-	/*
-	 * The method sets the primary reduction coefficient.
-	 * @param primaryReductionCoef - the primary reduction coefficient
-	 */
-	//public void setPrimaryReductionCoef(double primaryReductionCoef)
-	//{
-	//	_primaryReductionCoef = primaryReductionCoef;
-	//}
-	
-	/*
-	 * The method sets the secondary reduction coefficient.
-	 * @param primaryReductionCoef - the secondary reduction coefficient
-	 */
-	//public void setSecondaryReductionCoef(double secondaryReductionCoef)
-	//{
-	//	_secondaryReductionCoef = secondaryReductionCoef;
-	//}
 	
 	/**
 	 * The method sets up the list of bombing strategies and the corresponding probability distribution
