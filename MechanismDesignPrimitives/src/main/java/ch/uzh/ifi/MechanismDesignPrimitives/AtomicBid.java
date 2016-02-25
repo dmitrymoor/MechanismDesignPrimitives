@@ -14,7 +14,6 @@ import org.apache.logging.log4j.LogManager;
 /**
  * The class implements a generic atomic bid of an agent.
  * @author Dmitry Moor
- *
  */
 public class AtomicBid implements Type
 {
@@ -40,7 +39,6 @@ public class AtomicBid implements Type
 		_logger.debug("AtomicBid::AtomicBid ( agentId=" + agentId + ", items="+items.toString() + ", value="+value +")" );
 
 		_items = items;
-		
 		_type = new HashMap<String, Double>();
 		_type.put(Value, value);
 		_agentId = agentId;
@@ -86,7 +84,6 @@ public class AtomicBid implements Type
 				if( !rhs.getTypeComponent(pair.getKey()).equals(pair.getValue()))
 					return false;
 			}
-			
 		}
 		
 		_logger.debug("<- equals(...)");
@@ -120,11 +117,10 @@ public class AtomicBid implements Type
 	@Override
 	public String toString()
 	{
-		String str =  "( AgentId=" + _agentId + "," + _items + "," ;//+ _type.get("Value") + ")";
+		String str =  "( AgentId=" + _agentId + "," + _items + "," ;
 		for(Map.Entry<String, Double> component : _type.entrySet())
 			str += component.getKey() + "=" + component.getValue() + "; ";
-		str += ")";
-		return str;
+		return str +  ")";
 	}
 	
 	/**
@@ -180,7 +176,6 @@ public class AtomicBid implements Type
 	{
 		return _type.get(key);
 	}
-	
 
 	/**
 	 * (non-Javadoc)
@@ -293,10 +288,9 @@ public class AtomicBid implements Type
 	 */
 	public int getNumberOfUnitsByItemId(int itemId)
 	{
-		for(Integer item : _items)
-			if(itemId == item)
-				return 1;
-		throw new RuntimeException("no such itemId " + itemId);
+		if( _items.contains(itemId))
+			return 1;
+		else throw new RuntimeException("no such itemId " + itemId);
 	}
 	
 	/**
@@ -306,11 +300,7 @@ public class AtomicBid implements Type
 	 */
 	public double computeCost(List<Double> costs)
 	{
-		double cost = 0.;
-		for(int item : getInterestingSet())
-			cost += costs.get( item - 1 );
-		
-		return cost;
+		return _items.stream().map( gId -> costs.get( gId-1 ) ).reduce( (x1, x2) -> x1 + x2 ).get();
 	}
 	
 	protected int _agentId;						//An id of the agent
