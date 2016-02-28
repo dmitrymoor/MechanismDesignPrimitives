@@ -21,7 +21,7 @@ public class AllocationEC extends Allocation
 		super();
 		_realizedRVs = new LinkedList<List<Double> >();
 		_realizedRVsPerGood = new LinkedList<List<Double> > ();
-		_allocatedAvailabilitiesPerGood = null;
+		_allocatedGoodIds = null;
 		_realizationsOfAvailabilitiesPerGood = null;
 		_expectedBiddersValues = new LinkedList<List<Double> >();
 		_expectedAuctioneersValues = new LinkedList<Double>();
@@ -54,7 +54,7 @@ public class AllocationEC extends Allocation
 	}
 	
 	/**
-	 * @param tradeIdx - an index of the trade (seller)
+	 * @param tradeIdx - an index of the trade (auctioneer)
 	 * @return return realized values per good
 	 */
 	public List<Double> getRealizedRVsPerGood(int tradeIdx)
@@ -63,80 +63,82 @@ public class AllocationEC extends Allocation
 	}
 	
 	/**
+	 * The method returns a subset of goods for which availabilities are known.
 	 * @param bids bids of agents
 	 * @param numberOfItems number of goods
 	 * @return a list of allocated goods
 	 */
-	public List<Integer> getAllocatedAvailabilitiesPerGood( List<Type> bids, int numberOfItems)
+	public List<Integer> getAllocatedAvailabilitiesPerGood( List<Type> bids, boolean useOnlyAllocatedGoods)
 	{
-		if( _allocatedAvailabilitiesPerGood != null )
-			return _allocatedAvailabilitiesPerGood;
+		if( _allocatedGoodIds != null )
+			return _allocatedGoodIds;
 		
-		computeAvailabilitiesPerGood(bids, numberOfItems);
-		return _allocatedAvailabilitiesPerGood;
+		computeAvailabilitiesPerGood(bids, useOnlyAllocatedGoods);
+		return _allocatedGoodIds;
 	}
 	
 	/**
+	 * The method returns a list of realized availabilities of different goods.
 	 * @param bids bids of agents
-	 * @param numberOfItems number of goods
+	 * @param useOnlyAllocatedGoods true if realized availabilities of only allocated goods should be returned and false if 
+	 *                              realized availabilities of ALL goods should be returned (even of those not allocated).
 	 */
-	private void computeAvailabilitiesPerGood(List<Type> bids, int numberOfItems)
+	private void computeAvailabilitiesPerGood(List<Type> bids, boolean useOnlyAllocatedGoods)
 	{
-		_allocatedAvailabilitiesPerGood = new LinkedList<Integer>();
+		_allocatedGoodIds = new LinkedList<Integer>();
 		_realizationsOfAvailabilitiesPerGood = new LinkedList<Double>();
+		int numberOfItems = getRealizedRVsPerGood(0).size();
 		
-		for(int j = 0; j < getBiddersInvolved(0).size(); ++j)
+		if( useOnlyAllocatedGoods )	//use availabilities of only allocated goods
 		{
-			int bidderId = getBiddersInvolved(0).get(j);				
-			int itsAllocatedAtom = getAllocatedBundlesByIndex(0).get(j);
-			AtomicBid allocatedBundle = bids.get( bidderId-1 ).getAtom( itsAllocatedAtom );
+			for(int j = 0; j < getBiddersInvolved(0).size(); ++j)
+			{
+				int bidderId = getBiddersInvolved(0).get(j);				
+				int itsAllocatedAtom = getAllocatedBundlesByIndex(0).get(j);
+				AtomicBid allocatedBundle = bids.get( bidderId-1 ).getAtom( itsAllocatedAtom );
 			
-			if(numberOfItems <= 0)
-			{
-				_allocatedAvailabilitiesPerGood = IntStream.range(0, allocatedBundle.getInterestingSet().size()).boxed().map( i -> allocatedBundle.getInterestingSet().get(i)).collect(Collectors.toList());
-				_realizationsOfAvailabilitiesPerGood = IntStream.range(0, allocatedBundle.getInterestingSet().size()).boxed().map( i -> getRealizedRVsPerGood(0).get(_allocatedAvailabilitiesPerGood.get(i)-1)).collect(Collectors.toList());
-			}
-			else
-			{
-				_allocatedAvailabilitiesPerGood = IntStream.range(0, numberOfItems).boxed().map( i -> i+1 ).collect(Collectors.toList());
-				_realizationsOfAvailabilitiesPerGood = IntStream.range(0, numberOfItems).boxed().map( i-> getRealizedRVsPerGood(0).get(i)).collect(Collectors.toList());
+				_allocatedGoodIds.addAll( IntStream.range(0, allocatedBundle.getInterestingSet().size()).boxed().map( i -> allocatedBundle.getInterestingSet().get(i)).collect(Collectors.toList()));
 			}
 		}
+		else						//use availabilities of ALL goods (even those which were never allocated)
+			_allocatedGoodIds = IntStream.range(0, numberOfItems).boxed().map( i -> i+1 ).collect(Collectors.toList());
+
+		_realizationsOfAvailabilitiesPerGood.addAll( _allocatedGoodIds.stream().map( gId -> getRealizedRVsPerGood(0).get(gId - 1)).collect(Collectors.toList()) );
 	}
 	
 	/**
 	 * The method returns realized availabilities of goods.
 	 * @param bids bids of agents
-	 * @param numberOfItems number of goods
+	 * @param useOnlyAllocatedGoods true if only allocated goods 
 	 * @return a list of realized availabilities per good
 	 */
-	public List<Double> getRealizationsOfAvailabilitiesPerGood( List<Type> bids, int numberOfItems)
+	public List<Double> getRealizationsOfAvailabilitiesPerGood( List<Type> bids, boolean useOnlyAllocatedGoods)
 	{
 		if( _realizationsOfAvailabilitiesPerGood != null )	return _realizationsOfAvailabilitiesPerGood;
 		
-		computeAvailabilitiesPerGood(bids, numberOfItems);
+		computeAvailabilitiesPerGood(bids, useOnlyAllocatedGoods);
 		return _realizationsOfAvailabilitiesPerGood;
 	}
 	
 	/**
 	 * The method returns realization of a random variable which corresponds to a buyer in a particular trade.
-	 * @param sellerIdx - an index of a seller (a trade)
-	 * @param buyerIdx - an index of an allocated buyer
+	 * @param auctioneerIdx - an index of a seller (a trade)
+	 * @param bidderIdx - an index of an allocated buyer
 	 * @return a realization of the random variable 
 	 */
-	public double getRealizedRV(int sellerIdx, int buyerIdx)
+	public double getRealizedRV(int auctioneerIdx, int bidderIdx)
 	{
-		return _realizedRVs.get(sellerIdx).get(buyerIdx); 
+		return _realizedRVs.get(auctioneerIdx).get(bidderIdx); 
 	}
 	
 	/**
 	 * The method returns realization of all random variables which corresponds to buyers in a particular trade.
-	 * @param sellerIdx - an index of a seller (a trade)
+	 * @param auctioneerIdx - an index of a seller (a trade)
 	 * @return realizations of random variables 
 	 */
-	public List<Double> getRealizedRV(int sellerIdx)
+	public List<Double> getRealizedRV(int auctioneerIdx)
 	{
-		return _realizedRVs.get(sellerIdx); 
+		return _realizedRVs.get(auctioneerIdx); 
 	}
 	
 	/**
@@ -186,12 +188,14 @@ public class AllocationEC extends Allocation
 	 */
 	public double getExpectedWelfare()
 	{
-		return _expectedSocialWelfare.stream().reduce( (x1, x2) -> x1 + x2).get();
+		if( _expectedSocialWelfare.stream().reduce( (x1, x2) -> x1 + x2).isPresent() )
+			return _expectedSocialWelfare.stream().reduce( (x1, x2) -> x1 + x2).get();
+		else throw new RuntimeException("No data to compute expected SW: " + _expectedSocialWelfare.toString() + " " + _expectedAuctioneersValues.toString() + " " + _expectedBiddersValues.toString());
 	}
 	
 	protected List<List<Double> > _realizedRVs;					//A list containing realized availabilities of all allocated bundles in a trade
 	protected List<List<Double> > _realizedRVsPerGood; 			//A list containing realized availabilities of all allocated goods in a trade
-	protected List<Integer> _allocatedAvailabilitiesPerGood;
+	protected List<Integer> _allocatedGoodIds;
 	protected List<Double>  _realizationsOfAvailabilitiesPerGood;//TODO: remove either this or _realizedRVsPerGood
 	protected List<Double>  _expectedAuctioneersValues;			//A list of expected values of allocated auctioneers
 	protected List<List<Double> > _expectedBiddersValues;		//A list of expected costs of allocated bidders
