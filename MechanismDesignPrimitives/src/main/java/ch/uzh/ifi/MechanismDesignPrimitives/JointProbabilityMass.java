@@ -129,7 +129,6 @@ public class JointProbabilityMass
 			}
 		}
 		//_marginalAvailabilities.put(bundle, marginalProbability / _nSamples);
-		
 		return marginalProbability / numberOfSamples;
 	}
 	
