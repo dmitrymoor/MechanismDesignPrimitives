@@ -3,9 +3,12 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+
 import ch.uzh.ifi.GraphAlgorithms.Graph;
 
 /**
@@ -112,29 +115,14 @@ public class JointProbabilityMass
 		int numberOfSamples = 0;
 		for(int i = 0; i < _nSamples; ++i)
 		{
-			double minAvailability = 1.;
-			for(int j = 0; j < _numberOfRandomVars; ++j)
-			{
-				int goodId = j+1;
-				if( bundle.contains( goodId ) )
-					if(_samples[i][j] < minAvailability)
-						minAvailability = _samples[i][j] ;// / 2; //TODO:  !!! divided by 2
-			}
-			
-			boolean isConditioned = true;
+			final int sampleIdx = i;
+			double minAvailability = IntStream.range(0, _numberOfRandomVars).boxed().map(j -> j+1).filter( gId ->  bundle.contains( gId )).map( gId -> _samples[sampleIdx][gId-1] ).min( (x1, x2) -> x1.compareTo(x2) ).get();
+
+			boolean isConditioningSatisfied = true;
 			if(conditioningRVs != null && realizationsOfRVs != null)
-				for(int j = 0; j < conditioningRVs.size(); ++j)
-				{
-					int goodIdx = conditioningRVs.get(j) - 1;
-					double goodRealizedAvailability = realizationsOfRVs.get(j);
-					if( _samples[i][goodIdx] != goodRealizedAvailability )
-					{
-						isConditioned = false;
-						break;
-					}
-				}
+				isConditioningSatisfied = IntStream.range(0, conditioningRVs.size()).boxed().filter( j -> _samples[sampleIdx][conditioningRVs.get(j) - 1] != realizationsOfRVs.get(j)).count() > 0 ? false : true;
 			
-			if(isConditioned)
+			if(isConditioningSatisfied)
 			{
 				marginalProbability += minAvailability;
 				numberOfSamples += 1;
@@ -202,7 +190,7 @@ public class JointProbabilityMass
 	 */
 	private double[] throwDeterministicBomb(double[] sample)
 	{
-		int nodeToBomb = (int)(Math.random() * _numberOfRandomVars);			//Pick a random node uniformly
+		int nodeToBomb = (int)Math.floor(Math.random() * _numberOfRandomVars);			//Pick a random node uniformly
 
 		do
 		{
@@ -210,6 +198,8 @@ public class JointProbabilityMass
 			double prob = Math.random();
 			if( prob <= _bombsProbDistribution.get(bombToThrow) )
 				return _bombingStrategies.get(bombToThrow).applyBomb(sample, nodeToBomb);
+
+			nodeToBomb = (int)Math.floor(Math.random() * _numberOfRandomVars);
 		}
 		while(true);
 	}
