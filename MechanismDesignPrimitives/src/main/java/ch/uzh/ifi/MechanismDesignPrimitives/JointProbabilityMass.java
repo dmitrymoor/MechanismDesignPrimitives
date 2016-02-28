@@ -55,6 +55,10 @@ public class JointProbabilityMass
 		return str;
 	}
 	
+	/**
+	 * The method generates a deep copy of this object
+	 * @return a deep copy of the object
+	 */
 	public JointProbabilityMass copyIt()
 	{
 		JointProbabilityMass jpmf = new JointProbabilityMass(_dependencyGraph);
@@ -142,16 +146,20 @@ public class JointProbabilityMass
 		return _samples[sampleIdx];
 	}
 	
-	/*
-	 * 
+	/**
+	 * The method returns a sample from the set of generated samples
+	 * @param sIdx an index of the sample
+	 * @return the sample corresponding to the specified index
 	 */
 	public double[] getSample(int sIdx)
 	{
 		return _samples[sIdx];
 	}
 	
-	/*
-	 * 
+	/**
+	 * The method set the sample
+	 * @param sIdx
+	 * @param sample
 	 */
 	public void setSample(int sIdx, double[] sample)
 	{
@@ -189,7 +197,7 @@ public class JointProbabilityMass
 	 */
 	private double[] throwDeterministicBomb(double[] sample)
 	{
-		int nodeToBomb = (int)Math.floor(Math.random() * _numberOfRandomVars);			//Pick a random node uniformly
+		int nodeToBomb = (int)Math.floor(Math.random() * _numberOfRandomVars);				//Pick a random node uniformly
 
 		do
 		{
@@ -197,8 +205,6 @@ public class JointProbabilityMass
 			double prob = Math.random();
 			if( prob <= _bombsProbDistribution.get(bombToThrow) )
 				return _bombingStrategies.get(bombToThrow).applyBomb(sample, nodeToBomb);
-
-			nodeToBomb = (int)Math.floor(Math.random() * _numberOfRandomVars);
 		}
 		while(true);
 	}
