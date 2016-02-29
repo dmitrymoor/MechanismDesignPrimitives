@@ -23,6 +23,14 @@ public class CombinatorialType implements Type
 		_atomicBids = new LinkedList<AtomicBid>();
 	}
 	
+	public CombinatorialType(AtomicBid ... atoms )
+	{
+		_logger.debug("CombinatorialType::CombinatorialType(AtomicBid ... atoms )");
+		_atomicBids = new LinkedList<AtomicBid>();
+		for(AtomicBid atom : atoms)
+			_atomicBids.add(atom);
+	}
+	
 	/**
 	 * The method returns the number of atoms within the combinatorial type
 	 * @return the number of atoms
