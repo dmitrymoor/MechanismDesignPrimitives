@@ -29,6 +29,23 @@ public class AllocationEC extends Allocation
 	}
 	
 	/**
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		String str = "Allocation: \n";
+		for(int i = 0; i < _allocatedAuctioneersIds.size(); ++i)
+			str += "Auctioneer id: " + _allocatedAuctioneersIds.get(i) + ". Bidders IDs: " + _allocatedBiddersIds.get(i).toString() 
+			     + " Allocated Bundles: " + _allocatedBundles.toString() + ".\n Allocated Auctioneer Values: " + _allocatedAuctioneersValues.toString()
+			     + " Allocated Bidders Values: " + _allocatedBiddersValues.toString() + ".\n" 
+			     + " Expected Auctioneer Values: " + _expectedAuctioneersValues.toString() + " Expected Bidders Values: " + _expectedBiddersValues.toString();
+
+		return str;
+	}
+
+	/**
 	 * The method adds a new agents in the list of allocated agents (buyers).
 	 * @param agentId an ID of an allocated agent (buyer)
 	 * @param bidders a list of sellers' IDs allocated for this buyer
@@ -68,7 +85,7 @@ public class AllocationEC extends Allocation
 	 * @param numberOfItems number of goods
 	 * @return a list of allocated goods
 	 */
-	public List<Integer> getAllocatedAvailabilitiesPerGood( List<Type> bids, boolean useOnlyAllocatedGoods)
+	public List<Integer> getGoodIdsWithKnownAvailabilities( List<Type> bids, boolean useOnlyAllocatedGoods)
 	{
 		if( _allocatedGoodIds != null )
 			return _allocatedGoodIds;
