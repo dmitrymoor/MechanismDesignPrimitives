@@ -106,7 +106,7 @@ public class Allocation
 	 * @param tradeIndex an index of an agent for which the list of bundles should be returned
 	 * @return an index of a bundle (a plan) of this agent which is allocated for the agent
 	 */
-	public List<Integer> getAllocatedBundlesByIndex(int tradeIndex)
+	public List<Integer> getAllocatedBundlesOfTrade(int tradeIndex)
 	{
 		if(tradeIndex > _allocatedBundles.size() - 1)  throw new RuntimeException("No bundles allocated for agent with index=" + tradeIndex);
 		return _allocatedBundles.get(tradeIndex);

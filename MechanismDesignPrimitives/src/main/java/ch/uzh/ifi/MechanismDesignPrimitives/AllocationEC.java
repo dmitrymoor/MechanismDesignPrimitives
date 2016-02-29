@@ -111,7 +111,7 @@ public class AllocationEC extends Allocation
 			for(int j = 0; j < getBiddersInvolved(0).size(); ++j)
 			{
 				int bidderId = getBiddersInvolved(0).get(j);				
-				int itsAllocatedAtom = getAllocatedBundlesByIndex(0).get(j);
+				int itsAllocatedAtom = getAllocatedBundlesOfTrade(0).get(j);
 				AtomicBid allocatedBundle = bids.get( bidderId-1 ).getAtom( itsAllocatedAtom );
 			
 				_allocatedGoodIds.addAll( IntStream.range(0, allocatedBundle.getInterestingSet().size()).boxed().map( i -> allocatedBundle.getInterestingSet().get(i)).collect(Collectors.toList()));
