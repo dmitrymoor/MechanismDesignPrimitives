@@ -1,5 +1,6 @@
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -16,11 +17,11 @@ public class Allocation
 	 */
 	public Allocation()
 	{
-		_allocatedAuctioneersIds = new LinkedList<Integer>();
-		_allocatedBiddersIds =new LinkedList<List<Integer> >();
-		_allocatedBundles = new LinkedList<List<Integer> >();
-		_allocatedAuctioneersValues = new LinkedList<Double>();
-		_allocatedBiddersValues = new LinkedList< List<Double> >();
+		_allocatedAuctioneersIds = new ArrayList<Integer>();
+		_allocatedBiddersIds =new ArrayList<List<Integer> >();
+		_allocatedBundles = new ArrayList<List<Integer> >();
+		_allocatedAuctioneersValues = new ArrayList<Double>();
+		_allocatedBiddersValues = new ArrayList< List<Double> >();
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -19,13 +20,13 @@ public class AllocationEC extends Allocation
 	public AllocationEC()
 	{
 		super();
-		_realizedRVs = new LinkedList<List<Double> >();
-		_realizedRVsPerGood = new LinkedList<List<Double> > ();
+		_realizedRVs = new ArrayList<List<Double> >();
+		_realizedRVsPerGood = new ArrayList<List<Double> > ();
 		_allocatedGoodIds = null;
 		_realizationsOfAvailabilitiesPerGood = null;
-		_expectedBiddersValues = new LinkedList<List<Double> >();
-		_expectedAuctioneersValues = new LinkedList<Double>();
-		_expectedSocialWelfare= new LinkedList<Double>();
+		_expectedBiddersValues = new ArrayList<List<Double> >();
+		_expectedAuctioneersValues = new ArrayList<Double>();
+		_expectedSocialWelfare= new ArrayList<Double>();
 	}
 	
 	/**

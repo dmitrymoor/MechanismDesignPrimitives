@@ -1,5 +1,6 @@
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -53,7 +54,7 @@ public class AtomicBid implements Type
 	public AtomicBid(int agentId, Set<Integer> items, double value)
 	{
 		_logger.debug("AtomicBid::AtomicBid ( agentId=" + agentId + ", items="+items.toString() + ", value="+value +")" );
-		_items = new LinkedList<Integer>();
+		_items = new ArrayList<Integer>();
 		for(Integer item : items)
 			_items.add(item);
 		

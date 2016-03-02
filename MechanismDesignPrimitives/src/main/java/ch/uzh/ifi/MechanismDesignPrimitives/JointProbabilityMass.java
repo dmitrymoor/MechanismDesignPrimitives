@@ -120,11 +120,11 @@ public class JointProbabilityMass
 		for(int i = 0; i < _nSamples; ++i)
 		{
 			final int sampleIdx = i;
-			double minAvailability = IntStream.range(0, _numberOfRandomVars).boxed().parallel().map(j -> j+1).filter( gId ->  bundle.contains( gId )).map( gId -> _samples[sampleIdx][gId-1] ).min( (x1, x2) -> x1.compareTo(x2) ).get();
+			double minAvailability = IntStream.range(0, _numberOfRandomVars).boxed().map(j -> j+1).filter( gId ->  bundle.contains( gId )).map( gId -> _samples[sampleIdx][gId-1] ).min( (x1, x2) -> x1.compareTo(x2) ).get();
 
 			boolean isConditioningSatisfied = true;
 			if(conditioningRVs != null && realizationsOfRVs != null)
-				isConditioningSatisfied = IntStream.range(0, conditioningRVs.size()).boxed().parallel().filter( j -> _samples[sampleIdx][conditioningRVs.get(j) - 1] != realizationsOfRVs.get(j)).count() > 0 ? false : true;
+				isConditioningSatisfied = IntStream.range(0, conditioningRVs.size()).boxed().filter( j -> _samples[sampleIdx][conditioningRVs.get(j) - 1] != realizationsOfRVs.get(j)).count() > 0 ? false : true;
 			
 			if(isConditioningSatisfied)
 			{
