@@ -3,11 +3,11 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.openjdk.jmh.annotations.Benchmark;
 
 import ch.uzh.ifi.GraphAlgorithms.Graph;
 
@@ -120,11 +120,11 @@ public class JointProbabilityMass
 		for(int i = 0; i < _nSamples; ++i)
 		{
 			final int sampleIdx = i;
-			double minAvailability = IntStream.range(0, _numberOfRandomVars).boxed().map(j -> j+1).filter( gId ->  bundle.contains( gId )).map( gId -> _samples[sampleIdx][gId-1] ).min( (x1, x2) -> x1.compareTo(x2) ).get();
+			double minAvailability = IntStream.range(0, _numberOfRandomVars).boxed().parallel().map(j -> j+1).filter( gId ->  bundle.contains( gId )).map( gId -> _samples[sampleIdx][gId-1] ).min( (x1, x2) -> x1.compareTo(x2) ).get();
 
 			boolean isConditioningSatisfied = true;
 			if(conditioningRVs != null && realizationsOfRVs != null)
-				isConditioningSatisfied = IntStream.range(0, conditioningRVs.size()).boxed().filter( j -> _samples[sampleIdx][conditioningRVs.get(j) - 1] != realizationsOfRVs.get(j)).count() > 0 ? false : true;
+				isConditioningSatisfied = IntStream.range(0, conditioningRVs.size()).boxed().parallel().filter( j -> _samples[sampleIdx][conditioningRVs.get(j) - 1] != realizationsOfRVs.get(j)).count() > 0 ? false : true;
 			
 			if(isConditioningSatisfied)
 			{
@@ -171,6 +171,7 @@ public class JointProbabilityMass
 	 * The method generates samples from the joint pmf using "bombing" algorithm (described in comments).
 	 * A sample is a state of every node in the graph after the specified number of bombs was thrown.
 	 */
+	@Benchmark
 	private void generateSamples()
 	{
 		_logger.debug("->generateSamples()");
