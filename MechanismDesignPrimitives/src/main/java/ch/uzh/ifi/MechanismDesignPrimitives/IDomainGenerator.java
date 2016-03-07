@@ -11,9 +11,9 @@ public interface IDomainGenerator
 {
 	/**
 	 * The method generates a new bid for the specified agent from the implemented domain.
-	 * @param seed - a random seed
-	 * @param type - the type of the agent
+	 * @param seed a random seed
+	 * @param agentId an id of the agent
 	 * @return a combinatorial type generated for the implemented domain
 	 */
-	public Type generateBid(long seed, Type type);
+	public Type generateBid(long seed, int agentId);
 }

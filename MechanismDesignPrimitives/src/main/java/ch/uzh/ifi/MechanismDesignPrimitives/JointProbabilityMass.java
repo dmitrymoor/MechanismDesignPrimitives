@@ -176,13 +176,13 @@ public class JointProbabilityMass
 	{
 		_logger.debug("->generateSamples()");
 		
-		for(int i = 0; i < _nSamples; ++i)
+		for(int i = 0; i < _nSamples; ++i)							//TODO: parallelize this
 		{
 			double[] sample = new double[_numberOfRandomVars];		//Initialize states of every node in the dependency graph
 			for(int j = 0; j < _numberOfRandomVars; ++j)
 				sample[j] = 1;
 			
-			for(int j = 0; j < _nBombsToThrow; ++j)					//Throw specified number of bombs into the dependency graph
+			for(int j = 0; j < _nBombsToThrow; ++j)					//Throw the specified number of bombs into the dependency graph
 				sample = throwDeterministicBomb(sample);
 			
 			for(int j = 0; j < _numberOfRandomVars; ++j)			//Add the sample to the set of generated samples
