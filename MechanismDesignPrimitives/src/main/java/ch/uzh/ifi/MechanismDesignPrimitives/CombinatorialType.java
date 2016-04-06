@@ -47,7 +47,11 @@ public class CombinatorialType implements Type
 	@Override
 	public String toString()
 	{
-		return "Combinatorial Bid: " + _atomicBids.stream().map( x -> x.toString() ).reduce( (x1, x2) -> x1 + "\n" + x2).get();
+		String str = "";
+		for(int i = 0; i < _atomicBids.size(); ++i)
+			str += _atomicBids.get(i).toString() + "\n";
+		return str;
+		//return "Combinatorial Bid: " + _atomicBids.stream().map( x -> x.toString() ).reduce( (x1, x2) -> x1 + "\n" + x2).get();
 	}
 	
 	/**

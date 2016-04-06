@@ -69,7 +69,8 @@ public class JointProbabilityMass
 	}
 	
 	/**
-	 * The method sets the number of "bombs" to be used by sampling 
+	 * The method sets the number of "bombs" to be used when sampling. Not equivalent to the number of types
+	 * of bombs as several bombs of the same type might be thrown.
 	 * @param numberOfBombs - number of "bombs"
 	 */
 	public void setNumberOfBombsToThrow(int numberOfBombs)
@@ -171,7 +172,6 @@ public class JointProbabilityMass
 	 * The method generates samples from the joint pmf using "bombing" algorithm (described in comments).
 	 * A sample is a state of every node in the graph after the specified number of bombs was thrown.
 	 */
-	@Benchmark
 	private void generateSamples()
 	{
 		_logger.debug("->generateSamples()");

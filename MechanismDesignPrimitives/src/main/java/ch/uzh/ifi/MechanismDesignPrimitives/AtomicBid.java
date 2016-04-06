@@ -301,7 +301,9 @@ public class AtomicBid implements Type
 	 */
 	public double computeCost(List<Double> costs)
 	{
-		return _items.stream().map( gId -> costs.get( gId-1 ) ).reduce( (x1, x2) -> x1 + x2 ).get();
+		if(_items.size() > 0)
+			return _items.stream().map( gId -> costs.get( gId-1 ) ).reduce( (x1, x2) -> x1 + x2 ).get();
+		else return 0.;
 	}
 	
 	protected int _agentId;						//An id of the agent

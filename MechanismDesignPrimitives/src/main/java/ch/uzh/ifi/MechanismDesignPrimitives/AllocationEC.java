@@ -83,7 +83,7 @@ public class AllocationEC extends Allocation
 	/**
 	 * The method returns a subset of goods for which availabilities are known.
 	 * @param bids bids of agents
-	 * @param numberOfItems number of goods
+	 * @param useOnlyAllocatedGoods true if availabilities of only allocated bundles to be used; false otherwise
 	 * @return a list of allocated goods
 	 */
 	public List<Integer> getGoodIdsWithKnownAvailabilities( List<Type> bids, boolean useOnlyAllocatedGoods)
