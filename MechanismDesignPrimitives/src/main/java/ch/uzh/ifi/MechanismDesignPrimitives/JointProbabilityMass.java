@@ -1,5 +1,6 @@
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,11 +122,38 @@ public class JointProbabilityMass
 		for(int i = 0; i < _nSamples; ++i)
 		{
 			final int sampleIdx = i;
-			double minAvailability = IntStream.range(0, _numberOfRandomVars).boxed().map(j -> j+1).filter( gId ->  bundle.contains( gId )).map( gId -> _samples[sampleIdx][gId-1] ).min( (x1, x2) -> x1.compareTo(x2) ).get();
+			
+			List<Double> availabilitiesofGoodsInBundle = new ArrayList<Double>();
+			for(int j = 0; j < _numberOfRandomVars; ++j)
+			{
+				int goodId = j+1;
+				if(bundle.contains(goodId))
+					availabilitiesofGoodsInBundle.add( _samples[sampleIdx][goodId-1] );
+			}
+			
+			double minAvailability = Double.MAX_VALUE;
+			for(Double a : availabilitiesofGoodsInBundle )
+				if( a < minAvailability)
+					minAvailability = a;
+				
+			//double minAvailability = IntStream.range(0, _numberOfRandomVars).boxed()		//Equivalent to the lines above but the performance is lower
+			//		.map(j -> j+1).filter( gId ->  bundle.contains( gId ))
+			//		.map( gId -> _samples[sampleIdx][gId-1] )
+			//		.min( (x1, x2) -> x1.compareTo(x2) ).get();
 
 			boolean isConditioningSatisfied = true;
 			if(conditioningRVs != null && realizationsOfRVs != null)
-				isConditioningSatisfied = IntStream.range(0, conditioningRVs.size()).boxed().filter( j -> _samples[sampleIdx][conditioningRVs.get(j) - 1] != realizationsOfRVs.get(j)).count() > 0 ? false : true;
+			{
+				for(int j = 0; j < conditioningRVs.size(); ++j)
+					if( _samples[sampleIdx][conditioningRVs.get(j) - 1] != realizationsOfRVs.get(j) )
+					{
+						isConditioningSatisfied = false;
+						break;
+					}
+				//isConditioningSatisfied = IntStream.range(0, conditioningRVs.size()).boxed()
+				//		.filter( j -> _samples[sampleIdx][conditioningRVs.get(j) - 1] != realizationsOfRVs.get(j))
+				//		.count() > 0 ? false : true;
+			}
 			
 			if(isConditioningSatisfied)
 			{
