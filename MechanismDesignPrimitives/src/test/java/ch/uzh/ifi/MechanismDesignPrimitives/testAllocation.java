@@ -82,4 +82,49 @@ public class testAllocation {
 		}
 	}
 
+	/**
+	 * Test probabilistic allocation in a domain with two bidders (data providers, or sellers), two databases and
+	 * a single auctioneer (i.e., market platform, M).
+	 * 
+	 */
+	@Test
+	public void testProbabilisticAllocation1()
+	{
+		ProbabilisticAllocation allocation = new ProbabilisticAllocation();
+		
+		int auctioneerId = 0; 				//The market platform, M
+		
+		List<Integer> bidders = new LinkedList<Integer>();
+		bidders.add(1);
+		bidders.add(2);
+		
+		int dbID1 = 1;
+		int dbID2 = 2;
+		List<Integer> bundles = new LinkedList<Integer>();
+		bundles.add(dbID1);						//Id of the bundle allocated to the 1st bidder
+		bundles.add(dbID2);						//Id of the bundle allocated to the 2nd bidder
+		
+		double auctioneerValue = 0;
+		List<Double> biddersValues = new LinkedList<Double>();
+		biddersValues.add(10.);
+		biddersValues.add(12.);
+		
+		List<Double> allocationProbabilities = new LinkedList<Double>();
+		allocationProbabilities.add(0.3);
+		allocationProbabilities.add(1.0);
+		
+		try
+		{
+			allocation.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities);
+			assertTrue(allocation.getAuctioneerId(0) == 0);
+			assertTrue(allocation.getAllocationProbabilityOfBidderById(1) == 0.3);
+			assertTrue(allocation.getAllocationProbabilityOfBidderById(2) == 1.0);
+			assertTrue(allocation.getAllocationProbabilityOfBundle(dbID1) == 0.3);
+			assertTrue(allocation.getAllocationProbabilityOfBundle(dbID2) == 1.0);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 }
