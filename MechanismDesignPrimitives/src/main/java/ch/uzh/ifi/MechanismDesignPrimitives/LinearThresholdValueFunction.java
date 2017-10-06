@@ -3,6 +3,9 @@
  */
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * @author Dmitry Moor
  * The class implements a one-dimensional linear value function with a threshold. 
@@ -10,6 +13,8 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 public class LinearThresholdValueFunction implements IParametrizedValueFunction
 {
 
+	private static final Logger _logger = LogManager.getLogger(LinearThresholdValueFunction.class);
+	
 	/**
 	 * A simple constructor.
 	 */
@@ -28,6 +33,7 @@ public class LinearThresholdValueFunction implements IParametrizedValueFunction
 	 */
 	public LinearThresholdValueFunction(double marginalValue, double threshold, double[] params)
 	{
+		_logger.debug("LinearThresholdValueFunction::LinearThresholdValueFunction(...)");
 		this.setMarginalValue(marginalValue);
 		this.setThreshold(threshold);
 		this.setParams(params);
