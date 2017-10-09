@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +27,7 @@ public class LinearThresholdValueFunction implements IParametrizedValueFunction
 	 * Constructor.
 	 * @param marginalValue the slope of the linear value function.
 	 * @param threshold the threshold value
-	 * @param params parameters of the parametrized value function.
+	 * @param params parameters of the parameterized value function.
 	 */
 	public LinearThresholdValueFunction(double marginalValue, double threshold, double[] params)
 	{
