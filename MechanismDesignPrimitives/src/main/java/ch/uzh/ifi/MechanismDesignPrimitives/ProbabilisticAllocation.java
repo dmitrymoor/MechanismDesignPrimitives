@@ -58,7 +58,7 @@ public class ProbabilisticAllocation extends Allocation
 	/**
 	 * The method returns an allocation probability of the bundle with the specified Id.
 	 * @param bundleId an Id of the bundle.
-	 * @return total allocation probability of the bundle with thte given ID
+	 * @return total allocation probability of the bundle with the given ID
 	 */
 	public double getAllocationProbabilityOfBundle(int bundleId)
 	{
