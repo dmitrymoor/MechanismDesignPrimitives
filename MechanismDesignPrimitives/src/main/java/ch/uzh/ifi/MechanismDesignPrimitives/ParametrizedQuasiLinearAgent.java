@@ -48,7 +48,8 @@ public class ParametrizedQuasiLinearAgent
 			double p = computeProbabilityOfAllocation(i, allocation);
 			expectedValue += p * this._valueFunction.get(i).computeValue(goods);
 		}
-				
+		
+		utility = expectedValue + money;
 		return utility;
 	}
 	
@@ -60,7 +61,20 @@ public class ParametrizedQuasiLinearAgent
 	 */
 	private double computeProbabilityOfAllocation(int detAllocation, ProbabilisticAllocation probAllocation)
 	{
-		return 0;
+		int nBundles = probAllocation.getNumberOfAllocatedBundles();
+		double p = 1;
+		
+		for(int bundle = 0; bundle < nBundles; ++bundle)
+		{
+			int isAllocated = 1;
+			isAllocated = isAllocated << bundle;
+			
+			if( (isAllocated & detAllocation) > 0)
+				p *= probAllocation.getAllocationProbabilityOfBundle(bundle);
+			else
+				p *= (1-probAllocation.getAllocationProbabilityOfBundle(bundle));
+		}
+		return p;
 	}
 	
 	private double _endowment;											//Initial endowment of the consumer with money
