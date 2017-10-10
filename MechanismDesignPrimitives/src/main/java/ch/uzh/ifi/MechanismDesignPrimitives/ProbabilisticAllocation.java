@@ -2,6 +2,12 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 
 import java.util.List;
 
+/**
+ * The class implements a probabilistic allocation, i.e., a data structure that stores allocated bundles (goods)
+ * and their probabilities to be allocated to a particular bidder.
+ * @author Dmitry
+ *
+ */
 public class ProbabilisticAllocation extends Allocation
 {
 
@@ -70,5 +76,18 @@ public class ProbabilisticAllocation extends Allocation
 		return allocationProbabilityOfBundle;
 	}
 	
-	private List<Double> _allocationProbabilities;  			//Allocation probabilities of bidders.
+	/**
+	 * The method returns the number of agents who got a non-zero allocation probability.
+	 * @return the number of agents who are allocated with probability > 0
+	 */
+	public int getNumberOfAllocatedBundles()
+	{
+		int numberOfAllocatedBidders = 0;
+		for(Double a : _allocationProbabilities)
+			if( a > 0)
+				numberOfAllocatedBidders += 1;
+		return numberOfAllocatedBidders;
+	}
+	
+	private List<Double> _allocationProbabilities;  			//Allocation probabilities of bidders, or bundles (each bidder allocated to a single bundle).
 }
