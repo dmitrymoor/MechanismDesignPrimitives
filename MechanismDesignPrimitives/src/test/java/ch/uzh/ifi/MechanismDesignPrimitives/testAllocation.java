@@ -54,7 +54,7 @@ public class testAllocation {
 		bidders.add(1);
 		bidders.add(2);
 		
-		int dbID = 1;
+		int dbID = 0;
 		List<Integer> bundles = new LinkedList<Integer>();
 		bundles.add(dbID);						//Id of the bundle allocated to the 1st bidder
 		bundles.add(dbID);						//Id of the bundle allocated to the 2nd bidder
@@ -98,8 +98,8 @@ public class testAllocation {
 		bidders.add(1);
 		bidders.add(2);
 		
-		int dbID1 = 1;
-		int dbID2 = 2;
+		int dbID1 = 0;
+		int dbID2 = 1;
 		List<Integer> bundles = new LinkedList<Integer>();
 		bundles.add(dbID1);						//Id of the bundle allocated to the 1st bidder
 		bundles.add(dbID2);						//Id of the bundle allocated to the 2nd bidder
@@ -121,6 +121,7 @@ public class testAllocation {
 			assertTrue(allocation.getAllocationProbabilityOfBidderById(2) == 1.0);
 			assertTrue(allocation.getAllocationProbabilityOfBundle(dbID1) == 0.3);
 			assertTrue(allocation.getAllocationProbabilityOfBundle(dbID2) == 1.0);
+			assertTrue(allocation.getNumberOfAllocatedBundles() == 2);
 		}
 		catch(Exception e)
 		{
