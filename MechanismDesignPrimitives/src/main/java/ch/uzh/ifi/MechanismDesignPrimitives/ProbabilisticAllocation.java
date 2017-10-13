@@ -24,13 +24,13 @@ public class ProbabilisticAllocation extends Allocation
 	 * @param auctioneerId an ID of an allocated agent (buyer)
 	 * @param bidders a list of bidders allocated for the given auctioneer
 	 * @param itsAllocatedBundles a list of bundles allocated for this auctioneer
-	 * @param autioneerValue an actual (not expected) value of a buyer for this allocation
+	 * @param auctioneerValue an actual (not expected) value of a buyer for this allocation
 	 * @param biddersValues actual (not expected) costs of sellers allocated for the buyer
 	 * @param allocationProbabilities allocation probabilities of the bundles
 	 * @throws Exception if the allocated bundle set is empty
 	 */
 	public void addAllocatedAgent(int auctioneerId, List<Integer> bidders, List<Integer> itsAllocatedBundles, 
-			                      double autioneerValue, List<Double> biddersValues, List<Double> allocationProbabilities) throws Exception
+			                      double auctioneerValue, List<Double> biddersValues, List<Double> allocationProbabilities) throws Exception
 	{
 		if( itsAllocatedBundles.size() == 0 ) throw new Exception("The agent has to be allocated at least one bundle.");
 		if( _allocatedAuctioneersIds.size() != 0 ) throw new Exception("Probabilistic Allocation currently supports only one auctioneer.");
@@ -38,7 +38,7 @@ public class ProbabilisticAllocation extends Allocation
 		_allocatedAuctioneersIds.add( auctioneerId );
 		_allocatedBiddersIds.add( bidders );
 		_allocatedBundles.add(itsAllocatedBundles);
-		_allocatedAuctioneersValues.add( autioneerValue);
+		_allocatedAuctioneersValues.add( auctioneerValue);
 		_allocatedBiddersValues.add(biddersValues);
 		_allocationProbabilities = allocationProbabilities;
 	}

@@ -3,6 +3,10 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The class implements a model of an agent with quasi-linear utility parameterized by the "Allocation" object (see AAMAS paper).
@@ -12,6 +16,7 @@ import java.util.Map;
 public class ParametrizedQuasiLinearAgent 
 {
 
+	private static final Logger _logger = LogManager.getLogger(ParametrizedQuasiLinearAgent.class);
 	/**
 	 * A simple constructor.
 	 * @param endowment initial endowment of the agent
@@ -21,6 +26,7 @@ public class ParametrizedQuasiLinearAgent
 	public ParametrizedQuasiLinearAgent(double endowment, int[] allocations, IParametrizedValueFunction[] valueFunctions)
 	{
 		if(allocations.length != valueFunctions.length) throw new RuntimeException("Dimensionality mismatch.");
+		_logger.debug("ParametrizedQuasiLinearAgent::ParametrizedQuasiLinearAgent("+endowment+", " + Arrays.toString(allocations) + ", valueFunctions)");
 		
 		_valueFunction = new HashMap<Integer, IParametrizedValueFunction>();
 		for(int i = 0; i < allocations.length; ++i)
@@ -46,7 +52,7 @@ public class ParametrizedQuasiLinearAgent
 		for(int i = 0; i < numberOfPossibleAllocations; i++)
 		{
 			double p = computeProbabilityOfAllocation(i, allocation);
-			expectedValue += p * this._valueFunction.get(i).computeValue(goods);
+			expectedValue += p * this._valueFunction.get(new Integer(i)).computeValue(goods);
 		}
 		
 		utility = expectedValue + money;
@@ -66,9 +72,11 @@ public class ParametrizedQuasiLinearAgent
 		
 		for(int bundle = 0; bundle < nBundles; ++bundle)
 		{
+			//First, check if the bundle needs to be allocated under detAllocation
 			int isAllocated = 1;
 			isAllocated = isAllocated << bundle;
 			
+			//Then, use the prob of the bundle to be allocated if it is required by detAllocation
 			if( (isAllocated & detAllocation) > 0)
 				p *= probAllocation.getAllocationProbabilityOfBundle(bundle);
 			else
