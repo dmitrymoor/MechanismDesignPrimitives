@@ -1,9 +1,17 @@
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
+
+import ilog.concert.IloException;
+import ilog.concert.IloLPMatrix;
+import ilog.concert.IloNumExpr;
+import ilog.concert.IloNumVar;
+import ilog.concert.IloNumVarType;
+import ilog.cplex.IloCplex;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,30 +41,104 @@ public class ParametrizedQuasiLinearAgent
 			_valueFunction.put(allocations[i], valueFunctions[i]);
 		
 		_endowment = endowment;
+		_cplexSolver = null;
 	}
 	
 	/**
 	 * The method computes (expected) utility of the bundle given current allocation.
 	 * @param allocation probabilistic allocation of different DBs
 	 * @param bundle bundle of goods (i.e., {x0, x1,...} - quantities)
-	 * @return 
+	 * @return utility of the agent for the specified bundle under given allocation
 	 */
 	public double computeUtility( ProbabilisticAllocation allocation, List<Double> bundle )
 	{
-		double utility = 0.;
-		double expectedValue = 0.;
-		int numberOfPossibleAllocations = (int)Math.pow(2, allocation.getNumberOfAllocatedBundles());
+		_logger.debug("-> computeUtility( allocation=" + allocation.toString()+ ", bundle= " + bundle.toString() + ")");
 		double money = bundle.get(0);
-		double[] goods = {bundle.get(1)};
+		double goods = bundle.get(1);							//Only one good for now
+		
+		double expectedMarginalValue = computeExpectedMarginalValue(allocation);
+		double expectedThreshold = computeExpectedThreshold(allocation);
+		
+		_logger.debug("Expected marginal value: " + expectedMarginalValue + "; Expected threshold: " + expectedThreshold);
+		
+		if( goods <= expectedThreshold )
+			return expectedMarginalValue * goods + money;
+		else
+			return expectedMarginalValue * expectedThreshold + money;
+	}
+	
+	/**
+	 * The method solves the consumption problem of the agent given market prices.
+	 * @param prices market prices for goods
+	 * @param allocation probabilistic allocation of DBs
+	 * @return the optimal consumption bundle
+	 * @throws IloException 
+	 */
+	public List<Double> solveConsumptionProblem(List<Double> prices, ProbabilisticAllocation allocation) throws IloException
+	{
+		if( prices.get(0) != 1. ) throw new RuntimeException("Price for money must be equal to 1: " + prices.get(0));
+		
+		List<Double> optBundle = new LinkedList<Double>();
+		double optGood0 = 0.;
+		double optGood1 = 0.;
+		
+		List<Double> singleGoodBundle = new LinkedList<Double>();
+		singleGoodBundle.add(0.);
+		singleGoodBundle.add(1.);
+		
+		if( prices.get(1) <= computeExpectedMarginalValue(allocation) )
+			optGood1 = computeExpectedThreshold(allocation);
+		else 
+			optGood1 = 0.;
+		
+		optGood0 = _endowment - prices.get(1) * optGood1;
+		if(optGood0 < 0)
+		{
+			optGood0 = 0;
+			optGood1 = _endowment/prices.get(1);
+		}
+		
+		optBundle.add(optGood0);
+		optBundle.add(optGood1);
+		return optBundle;
+	}
+	
+	/**
+	 * The method computes expected marginal value corresponding to the specified probabilistic allocation of DBs
+	 * @param allocation probabilistic allocation of DBs
+	 * @return expected marginal value
+	 */
+	private double computeExpectedMarginalValue(ProbabilisticAllocation allocation)
+	{
+		double expectedMarginalValue = 0.;
+		
+		int numberOfPossibleAllocations = (int)Math.pow(2, allocation.getNumberOfAllocatedBundles());
 		
 		for(int i = 0; i < numberOfPossibleAllocations; i++)
 		{
-			double p = computeProbabilityOfAllocation(i, allocation);
-			expectedValue += p * this._valueFunction.get(new Integer(i)).computeValue(goods);
+			double prob = computeProbabilityOfAllocation(i, allocation);
+			expectedMarginalValue += prob * ((LinearThresholdValueFunction)(_valueFunction.get(i))).getMarginalValue();
 		}
+		return expectedMarginalValue;
+	}
+	
+	/**
+	 * The method computes expected threshold corresponding to the specified probabilistic allocation of DBs
+	 * @param allocation probabilistic allocation of DBs
+	 * @return expected threshold
+	 */
+	private double computeExpectedThreshold(ProbabilisticAllocation allocation)
+	{
+		double expectedThreshold = 0.;
 		
-		utility = expectedValue + money;
-		return utility;
+		int numberOfPossibleAllocations = (int)Math.pow(2, allocation.getNumberOfAllocatedBundles());
+		
+		for(int i = 0; i < numberOfPossibleAllocations; i++)
+		{
+			double prob = computeProbabilityOfAllocation(i, allocation);
+			expectedThreshold += prob * ((LinearThresholdValueFunction)(_valueFunction.get(i))).getThreshold();
+		}
+		return expectedThreshold;
 	}
 	
 	/**
@@ -68,7 +150,7 @@ public class ParametrizedQuasiLinearAgent
 	private double computeProbabilityOfAllocation(int detAllocation, ProbabilisticAllocation probAllocation)
 	{
 		int nBundles = probAllocation.getNumberOfAllocatedBundles();
-		double p = 1;
+		double prob = 1;
 		
 		for(int bundle = 0; bundle < nBundles; ++bundle)
 		{
@@ -78,14 +160,16 @@ public class ParametrizedQuasiLinearAgent
 			
 			//Then, use the prob of the bundle to be allocated if it is required by detAllocation
 			if( (isAllocated & detAllocation) > 0)
-				p *= probAllocation.getAllocationProbabilityOfBundle(bundle);
+				prob *= probAllocation.getAllocationProbabilityOfBundle(bundle);
 			else
-				p *= (1-probAllocation.getAllocationProbabilityOfBundle(bundle));
+				prob *= (1-probAllocation.getAllocationProbabilityOfBundle(bundle));
 		}
-		return p;
+		return prob;
 	}
 	
 	private double _endowment;											//Initial endowment of the consumer with money
 	private Map<Integer, IParametrizedValueFunction> _valueFunction;	//Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
 	private double _arrowPrattIdx;										//Risk-aversion measure
+	
+	private IloCplex _cplexSolver;
 }
