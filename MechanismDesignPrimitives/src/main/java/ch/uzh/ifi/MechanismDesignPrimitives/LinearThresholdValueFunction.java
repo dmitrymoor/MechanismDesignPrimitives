@@ -83,6 +83,24 @@ public class LinearThresholdValueFunction implements IParametrizedValueFunction
 		if( threshold < 0 ) throw new RuntimeException("Negative threshold: " + threshold);
 		_threshold = threshold;
 	}
+	
+	/**
+	 * The method returns the value threshold
+	 * @return the value threshold
+	 */
+	public double getThreshold()
+	{
+		return _threshold;
+	}
+	
+	/**
+	 * The method returns marginal value.
+	 * @return
+	 */
+	public double getMarginalValue()
+	{
+		return _marginalValue;
+	}
 
 	private double _marginalValue;				//Marginal value of the single good
 	private double _threshold;					//The maximum amount of the good for which the agent has positive marginal value
