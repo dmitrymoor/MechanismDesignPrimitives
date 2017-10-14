@@ -121,4 +121,62 @@ public class testQuasiLinearAgent {
 		assertTrue(Math.abs(agent.computeUtility(allocation5, bundle)-2.625)<1e-6);
 		assertTrue(Math.abs(agent.computeUtility(allocation6, bundle)-0.0)<1e-6);
 	}
+	
+	@Test
+	public void testUtility1() throws Exception
+	{
+		//Describe probabilistic allocation of sellers
+		ProbabilisticAllocation allocation1 = new ProbabilisticAllocation();
+		
+		int auctioneerId = 0; 				//The market platform, M
+		
+		List<Integer> bidders = new LinkedList<Integer>();
+		bidders.add(1);
+		bidders.add(2);
+		
+		int dbID1 = 0;
+		int dbID2 = 1;
+		List<Integer> bundles = new LinkedList<Integer>();
+		bundles.add(dbID1);						//Id of the bundle allocated to the 1st bidder
+		bundles.add(dbID2);						//Id of the bundle allocated to the 2nd bidder
+		
+		double auctioneerValue = 0;
+		List<Double> biddersValues = new LinkedList<Double>();
+		biddersValues.add(10.);
+		biddersValues.add(12.);
+		
+		List<Double> allocationProbabilities1 = new LinkedList<Double>();
+		allocationProbabilities1.add(0.5);
+		allocationProbabilities1.add(1.0);
+		
+		
+		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities1);
+		
+		//Describe buyer
+		double endowment = 1;
+		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
+		
+		double[] alloc1 = {0,0};
+		IParametrizedValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
+		
+		double[] alloc2 = {0,1};
+		IParametrizedValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
+		
+		double[] alloc3 = {1,0};
+		IParametrizedValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
+		
+		double[] alloc4 = {1,1};
+		IParametrizedValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
+		
+		IParametrizedValueFunction[] valueFunctions = {v1, v2, v3, v4};
+		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(endowment, allocations, valueFunctions);
+		
+		//Compute utility of the buyer for the given probabilistic allocation and bundle
+		List<Double> bundle = new LinkedList<Double>();
+		bundle.add(0.);
+		bundle.add(1.5);
+		
+		System.out.println(">>> " + agent.computeUtility(allocation1, bundle));
+		assertTrue(Math.abs(agent.computeUtility(allocation1, bundle)-3.0)<1e-6);
+	}
 }
