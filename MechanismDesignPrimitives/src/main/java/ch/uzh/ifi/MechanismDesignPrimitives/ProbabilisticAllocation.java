@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * The class implements a probabilistic allocation, i.e., a data structure that stores allocated bundles (goods)
  * and their probabilities to be allocated to a particular bidder.
- * @author Dmitry
+ * @author Dmitry Moor
  *
  */
 public class ProbabilisticAllocation extends Allocation

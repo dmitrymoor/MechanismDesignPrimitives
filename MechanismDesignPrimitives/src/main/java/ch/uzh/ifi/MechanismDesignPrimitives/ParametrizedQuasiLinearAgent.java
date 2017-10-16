@@ -159,6 +159,15 @@ public class ParametrizedQuasiLinearAgent
 		return prob;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getEndowment()
+	{
+		return _endowment;
+	}
+	
 	private double _endowment;											//Initial endowment of the consumer with money
 	private Map<Integer, IParametrizedValueFunction> _valueFunction;	//Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
 	private double _arrowPrattIdx;										//Risk-aversion measure	
