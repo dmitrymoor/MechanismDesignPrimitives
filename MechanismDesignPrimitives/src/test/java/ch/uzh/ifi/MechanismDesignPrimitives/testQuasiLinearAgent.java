@@ -176,7 +176,8 @@ public class testQuasiLinearAgent {
 		bundle.add(0.);
 		bundle.add(1.5);
 		
-		System.out.println(">>> " + agent.computeUtility(allocation1, bundle));
-		assertTrue(Math.abs(agent.computeUtility(allocation1, bundle)-3.0)<1e-6);
+		assertTrue(Math.abs(agent.computeExpectedMarginalValue(allocation1)-2.5 ) < 1e-6);
+		assertTrue(Math.abs(agent.computeExpectedThreshold(allocation1)-1.5) < 1e-6);
+		assertTrue(Math.abs(agent.computeUtility(allocation1, bundle)-3.75)<1e-6);
 	}
 }

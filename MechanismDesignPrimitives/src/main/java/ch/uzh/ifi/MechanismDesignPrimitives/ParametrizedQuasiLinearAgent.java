@@ -6,13 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
 
-import ilog.concert.IloException;
-import ilog.concert.IloLPMatrix;
-import ilog.concert.IloNumExpr;
-import ilog.concert.IloNumVar;
-import ilog.concert.IloNumVarType;
-import ilog.cplex.IloCplex;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +34,6 @@ public class ParametrizedQuasiLinearAgent
 			_valueFunction.put(allocations[i], valueFunctions[i]);
 		
 		_endowment = endowment;
-		_cplexSolver = null;
 	}
 	
 	/**
@@ -74,7 +66,7 @@ public class ParametrizedQuasiLinearAgent
 	 * @return the optimal consumption bundle
 	 * @throws IloException 
 	 */
-	public List<Double> solveConsumptionProblem(List<Double> prices, ProbabilisticAllocation allocation) throws IloException
+	public List<Double> solveConsumptionProblem(List<Double> prices, ProbabilisticAllocation allocation)
 	{
 		if( prices.get(0) != 1. ) throw new RuntimeException("Price for money must be equal to 1: " + prices.get(0));
 		
@@ -108,7 +100,7 @@ public class ParametrizedQuasiLinearAgent
 	 * @param allocation probabilistic allocation of DBs
 	 * @return expected marginal value
 	 */
-	private double computeExpectedMarginalValue(ProbabilisticAllocation allocation)
+	public double computeExpectedMarginalValue(ProbabilisticAllocation allocation)
 	{
 		double expectedMarginalValue = 0.;
 		
@@ -127,7 +119,7 @@ public class ParametrizedQuasiLinearAgent
 	 * @param allocation probabilistic allocation of DBs
 	 * @return expected threshold
 	 */
-	private double computeExpectedThreshold(ProbabilisticAllocation allocation)
+	public double computeExpectedThreshold(ProbabilisticAllocation allocation)
 	{
 		double expectedThreshold = 0.;
 		
@@ -169,7 +161,5 @@ public class ParametrizedQuasiLinearAgent
 	
 	private double _endowment;											//Initial endowment of the consumer with money
 	private Map<Integer, IParametrizedValueFunction> _valueFunction;	//Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
-	private double _arrowPrattIdx;										//Risk-aversion measure
-	
-	private IloCplex _cplexSolver;
+	private double _arrowPrattIdx;										//Risk-aversion measure	
 }
