@@ -37,6 +37,15 @@ public class ParametrizedQuasiLinearAgent
 	}
 	
 	/**
+	 * The method returns the endowment of the agent.
+	 * @return the endowment of the agent
+	 */
+	public double getEndowment()
+	{
+		return _endowment;
+	}
+	
+	/**
 	 * The method computes (expected) utility of the bundle given current allocation.
 	 * @param allocation probabilistic allocation of different DBs
 	 * @param bundle bundle of goods (i.e., {x0, x1,...} - quantities)
@@ -157,15 +166,6 @@ public class ParametrizedQuasiLinearAgent
 				prob *= (1-probAllocation.getAllocationProbabilityOfBundle(bundle));
 		}
 		return prob;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public double getEndowment()
-	{
-		return _endowment;
 	}
 	
 	private double _endowment;											//Initial endowment of the consumer with money
