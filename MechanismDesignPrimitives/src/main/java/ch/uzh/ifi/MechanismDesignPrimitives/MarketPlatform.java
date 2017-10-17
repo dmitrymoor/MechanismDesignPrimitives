@@ -3,7 +3,6 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -62,6 +61,7 @@ public class MarketPlatform
 	{
 		double value = 0.;
 		
+		//To analyze the maximal inverse demand, first one need to compute the maximal prices
 		List<Double> marginalValues = new ArrayList<Double>();
 		for(ParametrizedQuasiLinearAgent buyer: _buyers)
 			marginalValues.add(buyer.computeExpectedMarginalValue(allocation));
@@ -76,6 +76,7 @@ public class MarketPlatform
 				i -= 1;
 			}
 		
+		//Now integrate the maximal inverse demand
 		double price = 0.;
 		for( int i = 0; i < marginalValues.size(); ++i )
 		{
@@ -90,11 +91,37 @@ public class MarketPlatform
 			{
 				value += price * (quantity - marketDemandLow);
 				break;
-			}
-			
+			}	
 		}
-		//System.out.println(">>>> " + Arrays.toString(marginalValues.toArray()));
+
 		return value;
+	}
+	
+	/**
+	 * The method computes the value of the specified database as the positive externality the DB imposes
+	 * on buyers given current market prices and allocation of other DBs.
+	 * @param dbId id of the database
+	 * @param price current market price per row of a query answer
+	 * @param allocation current probabilistic allocation of sellers
+	 * @return the value of the specified DB.
+	 * @throws Exception 
+	 */
+	public double computeValueOfDB(int dbId, double price, ProbabilisticAllocation allocation) throws Exception
+	{
+		double valueOfDB = 0.;		
+		double marketDemand = computeMarketDemand(price, allocation).get(1);
+		
+		ProbabilisticAllocation allocationReduced = new ProbabilisticAllocation();
+		allocationReduced.addAllocatedAgent(allocation.getAuctioneerId(0), 
+											allocation.getBiddersInvolved(0), 
+				                            allocation.getAllocatedBundlesOfTrade(0), 
+				                            allocation.getAuctioneersAllocatedValue(0),
+				                            allocation.getBiddersValues(),
+				                            allocation.getAllocationProbabilities());
+		allocationReduced.deallocateBundle(dbId);
+		valueOfDB = computeAggregateValue(marketDemand, allocation) - computeAggregateValue(marketDemand, allocationReduced);
+		
+		return valueOfDB;
 	}
 	
 	private List<ParametrizedQuasiLinearAgent> _buyers;				//Buyers

@@ -1,5 +1,6 @@
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -43,6 +44,27 @@ public class ProbabilisticAllocation extends Allocation
 		_allocationProbabilities = allocationProbabilities;
 	}
 	
+	/**
+	 * The method returns the list of values of bidders.
+	 * @return list of values of bidders
+	 */
+	public List<Double> getBiddersValues()
+	{
+		return _allocatedBiddersValues.get(0);
+	}
+	
+	/**
+	 * The method returns the list of allocation probabilities
+	 * @return the list of allocation probabilities
+	 */
+	public List<Double> getAllocationProbabilities()
+	{
+		List<Double> copy = new LinkedList<Double>();
+		for( Double p : _allocationProbabilities )
+			copy.add(p);
+		
+		return copy;
+	}
 	/**
 	 * The method returns the allocation probability of a bidder with the specified ID
 	 * @param bidderId an Id of the bidder
@@ -99,5 +121,16 @@ public class ProbabilisticAllocation extends Allocation
 		return _allocationProbabilities.size();
 	}
 	
-	private List<Double> _allocationProbabilities;  			//Allocation probabilities of bidders, or bundles (each bidder allocated to a single bundle).
+	/**
+	 * The method sets the allocation probability of the specified bundle to 0.
+	 * @param bundleId an Id of the bundle to be deallocated
+	 */
+	public void deallocateBundle(int bundleId)
+	{
+		for(int i = 0; i < _allocatedBundles.get(0).size(); ++i)
+			if( _allocatedBundles.get(0).get(i) == bundleId )
+				_allocationProbabilities.set(i, 0.);
+	}
+	
+	private List<Double> _allocationProbabilities;  //Allocation probabilities of bidders (each bidder allocated to a single bundle).
 }
