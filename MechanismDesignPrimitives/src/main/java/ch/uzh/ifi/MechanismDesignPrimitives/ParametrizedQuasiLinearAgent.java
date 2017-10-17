@@ -148,7 +148,7 @@ public class ParametrizedQuasiLinearAgent
 	{
 		double expectedThreshold = 0.;
 		
-		int numberOfPossibleAllocations = (int)Math.pow(2, allocation.getNumberOfAllocatedBundles());
+		int numberOfPossibleAllocations = (int)Math.pow(2, allocation.getNumberOfBundles());
 		
 		for(int i = 0; i < numberOfPossibleAllocations; i++)
 		{
