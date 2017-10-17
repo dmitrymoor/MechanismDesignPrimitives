@@ -89,5 +89,15 @@ public class ProbabilisticAllocation extends Allocation
 		return numberOfAllocatedBidders;
 	}
 	
+	
+	/**
+	 * The method returns the number of different bundles
+	 * @return the number of bundles
+	 */
+	public int getNumberOfBundles()
+	{
+		return _allocationProbabilities.size();
+	}
+	
 	private List<Double> _allocationProbabilities;  			//Allocation probabilities of bidders, or bundles (each bidder allocated to a single bundle).
 }
