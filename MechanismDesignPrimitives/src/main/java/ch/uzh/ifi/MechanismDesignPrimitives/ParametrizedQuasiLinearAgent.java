@@ -24,11 +24,12 @@ public class ParametrizedQuasiLinearAgent
 	 * @param allocations an array of binary encoded deterministic allocations of DBs. An element i=0xabc of the array encodes the binary
 	 *        allocation of the 1st DB, a={0,1}, of the second, b={0,1} and of the 3rd one, i.e., c={0,1}
 	 */
-	public ParametrizedQuasiLinearAgent(double endowment, int[] allocations, IParametrizedValueFunction[] valueFunctions)
+	public ParametrizedQuasiLinearAgent(int id, double endowment, int[] allocations, IParametrizedValueFunction[] valueFunctions)
 	{
 		if(allocations.length != valueFunctions.length) throw new RuntimeException("Dimensionality mismatch.");
-		_logger.debug("ParametrizedQuasiLinearAgent::ParametrizedQuasiLinearAgent("+endowment+", " + Arrays.toString(allocations) + ", valueFunctions)");
+		_logger.debug("ParametrizedQuasiLinearAgent::ParametrizedQuasiLinearAgent("+id+", "+endowment+", " + Arrays.toString(allocations) + ", valueFunctions)");
 		
+		_id = id;
 		_valueFunction = new HashMap<Integer, IParametrizedValueFunction>();
 		for(int i = 0; i < allocations.length; ++i)
 			_valueFunction.put(allocations[i], valueFunctions[i]);
@@ -43,6 +44,15 @@ public class ParametrizedQuasiLinearAgent
 	public double getEndowment()
 	{
 		return _endowment;
+	}
+	
+	/**
+	 * The method returns agent's Id
+	 * @return id of the agent
+	 */
+	public int getAgentId()
+	{
+		return _id;
 	}
 	
 	/**
@@ -87,8 +97,13 @@ public class ParametrizedQuasiLinearAgent
 		singleGoodBundle.add(0.);
 		singleGoodBundle.add(1.);
 		
-		if( prices.get(1) <= computeExpectedMarginalValue(allocation) )
-			optGood1 = computeExpectedThreshold(allocation);
+		double expectedMarginalValue = computeExpectedMarginalValue(allocation); 
+		double expectedThreshold = computeExpectedThreshold(allocation); 
+		_logger.debug("Agent: " + _id + ". expectedMarginalValue=" + expectedMarginalValue);
+		_logger.debug("Agent: " + _id + ". expectedThreshold=" + expectedThreshold);
+		
+		if( prices.get(1) <= expectedMarginalValue )
+			optGood1 = expectedThreshold;
 		else 
 			optGood1 = 0.;
 		
@@ -113,13 +128,16 @@ public class ParametrizedQuasiLinearAgent
 	{
 		double expectedMarginalValue = 0.;
 		
-		int numberOfPossibleAllocations = (int)Math.pow(2, allocation.getNumberOfAllocatedBundles());
+		int numberOfPossibleDeterministicAllocations = (int)Math.pow(2, allocation.getNumberOfBundles());
 		
-		for(int i = 0; i < numberOfPossibleAllocations; i++)
+		for(int i = 0; i < numberOfPossibleDeterministicAllocations; i++)
 		{
 			double prob = computeProbabilityOfAllocation(i, allocation);
+			System.out.println(">>>> + " + prob);
 			expectedMarginalValue += prob * ((LinearThresholdValueFunction)(_valueFunction.get(i))).getMarginalValue();
 		}
+		
+		_logger.debug("Agent " + _id +"; Expected Marginal Value for allocation " + allocation.toString()+" is "+expectedMarginalValue);
 		return expectedMarginalValue;
 	}
 	
@@ -159,7 +177,7 @@ public class ParametrizedQuasiLinearAgent
 			int isAllocated = 1;
 			isAllocated = isAllocated << bundle;
 			
-			//Then, use the prob of the bundle to be allocated if it is required by detAllocation
+			//Then, use the probability of the bundle to be allocated if it is required by detAllocation
 			if( (isAllocated & detAllocation) > 0)
 				prob *= probAllocation.getAllocationProbabilityOfBundle(bundle);
 			else
@@ -168,6 +186,7 @@ public class ParametrizedQuasiLinearAgent
 		return prob;
 	}
 	
+	private int _id;													//Agent id
 	private double _endowment;											//Initial endowment of the consumer with money
 	private Map<Integer, IParametrizedValueFunction> _valueFunction;	//Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
 	private double _arrowPrattIdx;										//Risk-aversion measure	
