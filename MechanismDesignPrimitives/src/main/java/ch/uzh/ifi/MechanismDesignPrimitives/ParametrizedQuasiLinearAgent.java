@@ -127,13 +127,11 @@ public class ParametrizedQuasiLinearAgent
 	public double computeExpectedMarginalValue(ProbabilisticAllocation allocation)
 	{
 		double expectedMarginalValue = 0.;
-		
 		int numberOfPossibleDeterministicAllocations = (int)Math.pow(2, allocation.getNumberOfBundles());
 		
 		for(int i = 0; i < numberOfPossibleDeterministicAllocations; i++)
 		{
 			double prob = computeProbabilityOfAllocation(i, allocation);
-			System.out.println(">>>> + " + prob);
 			expectedMarginalValue += prob * ((LinearThresholdValueFunction)(_valueFunction.get(i))).getMarginalValue();
 		}
 		
