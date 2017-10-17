@@ -110,6 +110,16 @@ public class testMarketPlatform {
 		marketDemand = mp.computeMarketDemand(4. + 1e-8, allocation);
 		assertTrue(Math.abs( marketDemand.get(1) - 0. ) < 1e-6);
 		assertTrue(Math.abs( marketDemand.get(0) - 20. ) < 1e-6);
+		
+		//4. Test aggregate value function
+		
+		assertTrue(Math.abs( mp.computeAggregateValue(123, allocation)-6 ) < 1e-6);
+		assertTrue(Math.abs( mp.computeAggregateValue(3+ 1e-8, allocation)-6 ) < 1e-6);
+		assertTrue(Math.abs( mp.computeAggregateValue(3- 0.1, allocation)-(5.9) ) < 1e-6);
+		assertTrue(Math.abs( mp.computeAggregateValue(1+ 0.1, allocation)-(4.1) ) < 1e-6);
+		assertTrue(Math.abs( mp.computeAggregateValue(1- 0.1, allocation)-(3.6) ) < 1e-6);
+		assertTrue(Math.abs( mp.computeAggregateValue(0.5, allocation)-(2) ) < 1e-6);
+		assertTrue(Math.abs( mp.computeAggregateValue(0, allocation)-0 ) < 1e-6);
 	}
 
 }

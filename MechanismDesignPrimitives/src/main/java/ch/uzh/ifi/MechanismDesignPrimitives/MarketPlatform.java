@@ -1,13 +1,17 @@
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * 
+ * The class corresponds to the market platform entity. It provides methods for evaluation of the market demand, 
+ * estimation of the aggregate market value, computation of values of DBs etc.
  * @author Dmitry Moor
  *
  */
@@ -46,6 +50,51 @@ public class MarketPlatform
 		}
 		
 		return marketDemand;
+	}
+	
+	/**
+	 * The method computes the aggregate value function at the given quantity and with the given probabilistic allocation.
+	 * @param quantity the quantity of good 1 to be consumed
+	 * @param allocation the probabilistic allocation of sellers/DBs
+	 * @return the aggregate value
+	 */
+	public double computeAggregateValue(double quantity, ProbabilisticAllocation allocation)
+	{
+		double value = 0.;
+		
+		List<Double> marginalValues = new ArrayList<Double>();
+		for(ParametrizedQuasiLinearAgent buyer: _buyers)
+			marginalValues.add(buyer.computeExpectedMarginalValue(allocation));
+		
+		Collections.sort(marginalValues);
+		Collections.reverse(marginalValues);
+		
+		for(int i = 1; i < marginalValues.size(); ++i)
+			if(marginalValues.get(i) == marginalValues.get(i-1))
+			{
+				marginalValues.remove(i);
+				i -= 1;
+			}
+		
+		double price = 0.;
+		for( int i = 0; i < marginalValues.size(); ++i )
+		{
+			price = marginalValues.get(i);
+			double marketDemandHigh  = computeMarketDemand(price - 1e-8, allocation).get(1);
+			double marketDemandLow = computeMarketDemand(price + 1e-8, allocation).get(1);
+			if( marketDemandHigh < quantity )
+			{
+				value += price * (marketDemandHigh - marketDemandLow);
+			}
+			else
+			{
+				value += price * (quantity - marketDemandLow);
+				break;
+			}
+			
+		}
+		//System.out.println(">>>> " + Arrays.toString(marginalValues.toArray()));
+		return value;
 	}
 	
 	private List<ParametrizedQuasiLinearAgent> _buyers;				//Buyers
