@@ -16,7 +16,7 @@ public class testMarketPlatform {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testMarketDemand() throws Exception 
+	public void testMarketDemandWithLargeEndowments() throws Exception 
 	{
 		//0. Define DBs
 		int dbID1 = 0;
@@ -36,7 +36,7 @@ public class testMarketPlatform {
 		
 		
 		//2. Create 2 buyers
-		double endowment = 1;
+		double endowment = 10;
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible deterministic allocations
 		
 		double[] alloc1 = {0,0};
@@ -93,6 +93,23 @@ public class testMarketPlatform {
 		List<Double> marketDemand = mp.computeMarketDemand(0., allocation);
 		
 		assertTrue(Math.abs( marketDemand.get(1) - 3. ) < 1e-6);
+		assertTrue(Math.abs( marketDemand.get(0) - 20. ) < 1e-6);
+		
+		marketDemand = mp.computeMarketDemand(1. - 1e-8, allocation);
+		assertTrue(Math.abs( marketDemand.get(1) - 3. ) < 1e-6);
+		assertTrue(Math.abs( marketDemand.get(0) - 17. ) < 1e-6);
+		
+		marketDemand = mp.computeMarketDemand(1. + 1e-8, allocation);
+		assertTrue(Math.abs( marketDemand.get(1) - 1. ) < 1e-6);
+		assertTrue(Math.abs( marketDemand.get(0) - 19. ) < 1e-6);
+		
+		marketDemand = mp.computeMarketDemand(4. - 1e-8, allocation);
+		assertTrue(Math.abs( marketDemand.get(1) - 1. ) < 1e-6);
+		assertTrue(Math.abs( marketDemand.get(0) - 16. ) < 1e-6);
+		
+		marketDemand = mp.computeMarketDemand(4. + 1e-8, allocation);
+		assertTrue(Math.abs( marketDemand.get(1) - 0. ) < 1e-6);
+		assertTrue(Math.abs( marketDemand.get(0) - 20. ) < 1e-6);
 	}
 
 }

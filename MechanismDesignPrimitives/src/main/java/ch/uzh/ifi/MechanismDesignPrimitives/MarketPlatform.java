@@ -1,7 +1,6 @@
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -43,7 +42,7 @@ public class MarketPlatform
 			List<Double> consumptionBundle = buyer.solveConsumptionProblem(prices, allocation);
 			marketDemand.set(0, marketDemand.get(0) + consumptionBundle.get(0));
 			marketDemand.set(1, marketDemand.get(1) + consumptionBundle.get(1));
-			_logger.debug("Demand of i=" + buyer.getAgentId() + " x0: " + consumptionBundle.get(0) + "; x1: " + consumptionBundle.get(1));
+			_logger.debug("Demand of i=" + buyer.getAgentId() + " given price p= "+ price +" x0: " + consumptionBundle.get(0) + "; x1: " + consumptionBundle.get(1));
 		}
 		
 		return marketDemand;
