@@ -135,7 +135,7 @@ public class ParametrizedQuasiLinearAgent
 			expectedMarginalValue += prob * ((LinearThresholdValueFunction)(_valueFunction.get(i))).getMarginalValue();
 		}
 		
-		_logger.debug("Agent " + _id +"; Expected Marginal Value for allocation " + allocation.toString()+" is "+expectedMarginalValue);
+		_logger.debug("Agent " + _id + "; Expected Marginal Value for allocation " + allocation.toString() + " is " + expectedMarginalValue);
 		return expectedMarginalValue;
 	}
 	
@@ -148,9 +148,9 @@ public class ParametrizedQuasiLinearAgent
 	{
 		double expectedThreshold = 0.;
 		
-		int numberOfPossibleAllocations = (int)Math.pow(2, allocation.getNumberOfBundles());
+		int numberOfPossibleDeterministicAllocations = (int)Math.pow(2, allocation.getNumberOfBundles());
 		
-		for(int i = 0; i < numberOfPossibleAllocations; i++)
+		for(int i = 0; i < numberOfPossibleDeterministicAllocations; i++)
 		{
 			double prob = computeProbabilityOfAllocation(i, allocation);
 			expectedThreshold += prob * ((LinearThresholdValueFunction)(_valueFunction.get(i))).getThreshold();
@@ -166,7 +166,7 @@ public class ParametrizedQuasiLinearAgent
 	 */
 	private double computeProbabilityOfAllocation(int detAllocation, ProbabilisticAllocation probAllocation)
 	{
-		int nBundles = probAllocation.getNumberOfAllocatedBundles();
+		int nBundles = probAllocation.getNumberOfBundles();
 		double prob = 1;
 		
 		for(int bundle = 0; bundle < nBundles; ++bundle)

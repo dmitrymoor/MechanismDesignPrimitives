@@ -436,10 +436,6 @@ public class testQuasiLinearAgent {
 		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, allocations, valueFunctions);
 		
 		//Compute utility of the buyer for the given probabilistic allocation and bundle
-		//List<Double> bundle = new LinkedList<Double>();
-		//bundle.add(0.);
-		//bundle.add(1.5);
-		
 		assertTrue(Math.abs( agent.computeExpectedMarginalValue(allocation1) - 4.) < 1e-6);
 		
 		List<Double> prices = new LinkedList<Double>();
