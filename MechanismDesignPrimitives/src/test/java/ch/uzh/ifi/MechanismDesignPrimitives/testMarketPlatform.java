@@ -129,6 +129,12 @@ public class testMarketPlatform {
 		
 		assertTrue(Math.abs( mp.computeValueOfDB(dbID1, 1 - 1e-8, allocation)  - 0) < 1e-6);
 		assertTrue(Math.abs( mp.computeValueOfDB(dbID2, 1 - 1e-8, allocation)  - 0) < 1e-6);
+		
+		allocationProbabilities = Arrays.asList(1., 1.);
+		allocation.resetAllocationProbabilities(allocationProbabilities);
+		
+		assertTrue(Math.abs( mp.computeValueOfDB(dbID1, 1 - 1e-8, allocation)  - 4) < 1e-6);
+		assertTrue(Math.abs( mp.computeValueOfDB(dbID2, 1 - 1e-8, allocation)  - 4) < 1e-6);
 	}
 
 }

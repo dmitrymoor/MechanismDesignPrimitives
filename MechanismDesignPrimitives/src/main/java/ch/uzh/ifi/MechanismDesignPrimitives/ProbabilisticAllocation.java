@@ -65,6 +65,7 @@ public class ProbabilisticAllocation extends Allocation
 		
 		return copy;
 	}
+	
 	/**
 	 * The method returns the allocation probability of a bidder with the specified ID
 	 * @param bidderId an Id of the bidder
@@ -119,6 +120,16 @@ public class ProbabilisticAllocation extends Allocation
 	public int getNumberOfBundles()
 	{
 		return _allocationProbabilities.size();
+	}
+	
+	/**
+	 * The method resets allocation probabilities of sellers.
+	 * @param allocationProbabilities new allocation probabilities of sellers
+	 */
+	public void resetAllocationProbabilities(List<Double> allocationProbabilities)
+	{
+		if( allocationProbabilities.size() != _allocationProbabilities.size() ) throw new RuntimeException("Dimensionality mismatch.");
+		_allocationProbabilities = allocationProbabilities;
 	}
 	
 	/**
