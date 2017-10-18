@@ -11,7 +11,7 @@ import org.junit.Test;
 public class testMarketPlatform {
 
 	/**
-	 * There are 2 sellers and 2 buyers in this scenario.
+	 * There are 2 sellers and 2 buyers in this scenario (see AAMAS'17 paper).
 	 * Different sellers produce different DBs.
 	 * @throws Exception 
 	 */
@@ -37,7 +37,7 @@ public class testMarketPlatform {
 		
 		//2. Create 2 buyers
 		double endowment = 10;
-		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible deterministic allocations
+		int allocations[] = {0b00, 0b01, 0b10, 0b11};									// 4 possible deterministic allocations
 		
 		double[] alloc1 = {0,0};
 		IParametrizedValueFunction v11 = new LinearThresholdValueFunction(0, 0, alloc1);
@@ -55,7 +55,7 @@ public class testMarketPlatform {
 		IParametrizedValueFunction v14 = new LinearThresholdValueFunction(6, 1, alloc4);
 		IParametrizedValueFunction v24 = new LinearThresholdValueFunction(1, 4, alloc4);
 		
-		IParametrizedValueFunction[] valueFunctions1 = {v11, v12, v13, v14};
+		IParametrizedValueFunction[] valueFunctions1 = {v11, v12, v13, v14};			//Parameterized value functions for both buyers 
 		IParametrizedValueFunction[] valueFunctions2 = {v21, v22, v23, v24};
 		ParametrizedQuasiLinearAgent buyer1 = new ParametrizedQuasiLinearAgent(1, endowment, allocations, valueFunctions1);
 		ParametrizedQuasiLinearAgent buyer2 = new ParametrizedQuasiLinearAgent(2, endowment, allocations, valueFunctions2);
@@ -67,23 +67,22 @@ public class testMarketPlatform {
 		//3. Create market platform and evaluate the market demand
 		MarketPlatform mp = new MarketPlatform(buyers, sellers);
 		
-		ProbabilisticAllocation allocation = new ProbabilisticAllocation();
-		
-		int auctioneerId = 0; 									//The market platform, M
+		int auctioneerId = 0; 															//The market platform, M
 		
 		List<Integer> bidders = new LinkedList<Integer>();
 		bidders.add(seller1.getAgentId());
 		bidders.add(seller2.getAgentId());
 		
 		List<Integer> bundles = new LinkedList<Integer>();
-		bundles.add(dbID1);										//Id of the bundle allocated to the 1st bidder
-		bundles.add(dbID2);										//Id of the bundle allocated to the 2nd bidder
+		bundles.add(dbID1);																//Id of the bundle allocated to the 1st bidder
+		bundles.add(dbID2);																//Id of the bundle allocated to the 2nd bidder
 		
 		double auctioneerValue = 0;
 		List<Double> biddersValues = new LinkedList<Double>();
 		biddersValues.add(seller1.getValue());
 		biddersValues.add(seller2.getValue());
 		
+		ProbabilisticAllocation allocation = new ProbabilisticAllocation();				//Probabilistic allocation of sellers
 		List<Double> allocationProbabilities = new LinkedList<Double>();
 		allocationProbabilities.add(0.);
 		allocationProbabilities.add(1.0);
@@ -124,6 +123,12 @@ public class testMarketPlatform {
 		//5. Test values of DBs
 		assertTrue(Math.abs( mp.computeValueOfDB(dbID1, 1 - 1e-8, allocation)  - 0) < 1e-6);
 		assertTrue(Math.abs( mp.computeValueOfDB(dbID2, 1 - 1e-8, allocation)  - 6) < 1e-6);
+		
+		allocation.deallocateBundle(dbID1);
+		allocation.deallocateBundle(dbID2);
+		
+		assertTrue(Math.abs( mp.computeValueOfDB(dbID1, 1 - 1e-8, allocation)  - 0) < 1e-6);
+		assertTrue(Math.abs( mp.computeValueOfDB(dbID2, 1 - 1e-8, allocation)  - 0) < 1e-6);
 	}
 
 }

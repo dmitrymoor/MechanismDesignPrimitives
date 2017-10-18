@@ -113,7 +113,7 @@ public class MarketPlatform
 		
 		ProbabilisticAllocation allocationReduced = new ProbabilisticAllocation();
 		allocationReduced.addAllocatedAgent(allocation.getAuctioneerId(0), 
-											allocation.getBiddersInvolved(0), 
+											allocation.getBiddersInvolved(0),
 				                            allocation.getAllocatedBundlesOfTrade(0), 
 				                            allocation.getAuctioneersAllocatedValue(0),
 				                            allocation.getBiddersValues(),
