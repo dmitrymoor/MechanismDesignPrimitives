@@ -34,7 +34,7 @@ public class SimpleType implements Type
 	 */
 	public double getValue()
 	{
-		return _type.get("Value");
+		return (double)_type.get("Value");
 	}
 	
 	/*
@@ -94,7 +94,7 @@ public class SimpleType implements Type
 	{
 		List<Integer> items = new LinkedList<Integer>();
 		items.add(1);
-		AtomicBid atom = new AtomicBid(_agentId, items, _type.get("Value"));
+		AtomicBid atom = new AtomicBid(_agentId, items, (double)_type.get("Value"));
 		return atom;
 	}
 
@@ -118,26 +118,41 @@ public class SimpleType implements Type
 		//TODO: add throwing exception as it is not possible to add a new atom to a SimpleType
 	}
 	
+	/**
+	 * 
+	 * @param atomIdx
+	 * @param key
+	 * @param componentValue
+	 */
 	@Override
-	public void setTypeComponent(int atomIdx, String key, Object componentValue) {
-		// TODO Auto-generated method stub
-		
+	public void setTypeComponent(int atomIdx, String key, Object componentValue) 
+	{
+		if( atomIdx > 1)	throw new RuntimeException("Simple type can contain at most one atom: " + atomIdx);
+		else setTypeComponent(key, componentValue);
+	}
+	
+	/**
+	 * The method sets up components of the generic type.
+	 * @param key
+	 * @param componentValue
+	 */
+	@Override
+	public void setTypeComponent(String key, Object componentValue) 
+	{
+		if(_type.containsKey(key)) throw new RuntimeException("The type already has such a key.");
+		_type.put(key, (double)componentValue);
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public Object getTypeComponent(String key) 
+	{
+		return _type.get(key);
 	}
 	
 	private List<Integer> _interestingSet;
 	private Map<String, Double> _type;
 	private int _agentId;
-
-	@Override
-	public Object getTypeComponent(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setTypeComponent(String key, Object componentValue) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
