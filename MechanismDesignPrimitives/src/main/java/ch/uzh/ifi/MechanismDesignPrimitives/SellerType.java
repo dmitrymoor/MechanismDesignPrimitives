@@ -2,6 +2,9 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 
 import java.util.List;
 
+import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.distribution.UniformRealDistribution;
+
 public class SellerType implements Type
 {
 
@@ -89,7 +92,7 @@ public class SellerType implements Type
 
 	public Distribution getDistribution()
 	{
-		return Distribution.UNIFORM;
+		return _distribution;
 	}
 	
 	public double getMean()
@@ -115,6 +118,42 @@ public class SellerType implements Type
 	public void setVariance(double var)
 	{
 		_var = var;
+	}
+	
+	public double computeCumulativeDistribution(double cost)
+	{
+		double cdf = -1.;
+		
+		if( _distribution == Distribution.UNIFORM )
+		{
+			UniformRealDistribution dist = new UniformRealDistribution(_mean - Math.sqrt(3.*_var), _mean + Math.sqrt(3.*_var));
+			return dist.cumulativeProbability(cost);
+		}
+		else if( _distribution == Distribution.NORMAL)
+		{
+			NormalDistribution dist = new NormalDistribution(_mean, Math.sqrt(_var));
+			return dist.cumulativeProbability(cost);
+		}
+		
+		return cdf;
+	}
+	
+	public double computeProbabilityDensity(double cost)
+	{
+		double pdf = -1.;
+		
+		if( _distribution == Distribution.UNIFORM )
+		{
+			UniformRealDistribution dist = new UniformRealDistribution(_mean - Math.sqrt(3.*_var), _mean + Math.sqrt(3.*_var));
+			return dist.density(cost);
+		}
+		else if( _distribution == Distribution.NORMAL)
+		{
+			NormalDistribution dist = new NormalDistribution(_mean, Math.sqrt(_var));
+			return dist.density(cost);
+		}
+
+		return pdf;
 	}
 	
 	private AtomicBid _atom;							// Atomic bid of the seller

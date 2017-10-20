@@ -19,11 +19,19 @@ public class testSellers {
 		
 		AtomicBid atom = new AtomicBid(sellerId, bundle, sellerCost);
 		
-		SellerType seller = new SellerType(atom, Distribution.UNIFORM, 1.0, 1./3.);
+		SellerType seller = new SellerType(atom, Distribution.UNIFORM, 1., 1./3.);
 		
 		assertTrue( seller.getDistribution() == Distribution.UNIFORM );
 		assertTrue( Math.abs((double)seller.getMean() - 1.0) < 1e-6);
 		assertTrue( Math.abs((double)seller.getVariance() - 1./3.) < 1e-6);
+		assertTrue( Math.abs((double)seller.computeCumulativeDistribution(1.) - 0.5) < 1e-6);
+		assertTrue( Math.abs((double)seller.computeCumulativeDistribution(3.) - 1.) < 1e-6);
+		assertTrue( Math.abs((double)seller.computeCumulativeDistribution(2.) - 1.) < 1e-6);
+		assertTrue( Math.abs((double)seller.computeCumulativeDistribution(0.) - 0.) < 1e-6);
+		
+		assertTrue( Math.abs((double)seller.computeProbabilityDensity(0.) - 0.5) < 1e-6);
+		assertTrue( Math.abs((double)seller.computeProbabilityDensity(1.) - 0.5) < 1e-6);
+		assertTrue( Math.abs((double)seller.computeProbabilityDensity(2.) - 0.5) < 1e-6);
 	}
 
 }
