@@ -28,12 +28,14 @@ public class SellerType implements Type
 		_var = variance;
 	}
 	
-	
-	
+	/**
+	 * (non-Javadoc)
+	 * @see ch.uzh.ifi.MechanismDesignPrimitives.Type#getAgentId()
+	 */
 	@Override
-	public int getAgentId() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getAgentId() 
+	{
+		return _atom.getAgentId();
 	}
 
 	@Override
@@ -60,22 +62,36 @@ public class SellerType implements Type
 		
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see ch.uzh.ifi.MechanismDesignPrimitives.Type#getInterestingSet(int)
+	 */
 	@Override
-	public List<Integer> getInterestingSet(int atomIdx) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Integer> getInterestingSet(int atomIdx) 
+	{
+		if(atomIdx > 0) throw new RuntimeException("Currently only 1 atom is supported: " + atomIdx);
+		return _atom.getInterestingSet();
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see ch.uzh.ifi.MechanismDesignPrimitives.Type#getNumberOfAtoms()
+	 */
 	@Override
-	public int getNumberOfAtoms() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getNumberOfAtoms() 
+	{
+		return 1;
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see ch.uzh.ifi.MechanismDesignPrimitives.Type#getAtom(int)
+	 */
 	@Override
-	public AtomicBid getAtom(int atomIdx) {
-		// TODO Auto-generated method stub
-		return null;
+	public AtomicBid getAtom(int atomIdx) 
+	{
+		if(atomIdx > 0) throw new RuntimeException("Currently only 1 atom is supported: " + atomIdx);
+		return _atom;
 	}
 
 	@Override
@@ -163,6 +179,17 @@ public class SellerType implements Type
 		virtualCost = cost + computeCumulativeDistribution(cost)/computeProbabilityDensity(cost);
 
 		return virtualCost;
+	}
+	
+	public double computeInverseVirtualCost(double value)
+	{
+		double cost = 0.;
+		
+		if(_distribution == Distribution.UNIFORM)
+			cost = value / 2.;
+		else throw new RuntimeException("Not defined.");
+		
+		return cost;
 	}
 	
 	private AtomicBid _atom;							// Atomic bid of the seller
