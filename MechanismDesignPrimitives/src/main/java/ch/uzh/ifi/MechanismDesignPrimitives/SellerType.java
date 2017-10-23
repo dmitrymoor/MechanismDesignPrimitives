@@ -172,10 +172,14 @@ public class SellerType implements Type
 		return pdf;
 	}
 	
-	public double computeVirtualCost()
+	public double computeItsVirtualCost()
+	{
+		return this.computeVirtualCost(_atom.getValue());
+	}
+	
+	public double computeVirtualCost(double cost)
 	{
 		double virtualCost = 0.;
-		double cost = _atom.getValue();
 		virtualCost = cost + computeCumulativeDistribution(cost)/computeProbabilityDensity(cost);
 
 		return virtualCost;
