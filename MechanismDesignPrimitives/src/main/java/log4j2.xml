@@ -21,9 +21,6 @@
     <Logger name="ch.uzh.ifi.MechanismDesignPrimitives.ParametrizedQuasiLinearAgent" level="DEBUG" additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
-    <Logger name="ch.uzh.ifi.MechanismDesignPrimitives.MarketPlatform" level="DEBUG" additivity="false">
-      <AppenderRef ref="Console"/>
-    </Logger>
     <Root level="debug">
       <AppenderRef ref="Console" level="DEBUG"/>
     </Root>
