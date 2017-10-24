@@ -1,7 +1,9 @@
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The class implements a probabilistic allocation, i.e., a data structure that stores allocated bundles (goods)
@@ -24,33 +26,20 @@ public class ProbabilisticAllocation extends Allocation
 	 * The method adds a new agents in the list of allocated agents (buyers in a reverse auction).
 	 * @param auctioneerId an ID of an allocated agent (buyer)
 	 * @param bidders a list of bidders allocated for the given auctioneer
-	 * @param itsAllocatedBundles a list of bundles allocated for this auctioneer
-	 * @param auctioneerValue an actual (not expected) value of a buyer for this allocation
-	 * @param biddersValues actual (not expected) costs of sellers allocated for the buyer
+	 * @param itsBundle a list of goods associated with this auctioneer
 	 * @param allocationProbabilities allocation probabilities of the bundles
 	 * @throws Exception if the allocated bundle set is empty
 	 */
-	public void addAllocatedAgent(int auctioneerId, List<Integer> bidders, List<Integer> itsAllocatedBundles, 
-			                      double auctioneerValue, List<Double> biddersValues, List<Double> allocationProbabilities) throws Exception
+	public void addAllocatedAgent(int auctioneerId, List<Integer> bidders, List<Integer> itsBundle, 
+            					  List<Double> allocationProbabilities) throws Exception
 	{
-		if( itsAllocatedBundles.size() == 0 ) throw new Exception("The agent has to be allocated at least one bundle.");
+		if( itsBundle.size() == 0 ) throw new Exception("The agent has to be allocated at least one bundle.");
 		if( _allocatedAuctioneersIds.size() != 0 ) throw new Exception("Probabilistic Allocation currently supports only one auctioneer.");
-		
+
 		_allocatedAuctioneersIds.add( auctioneerId );
 		_allocatedBiddersIds.add( bidders );
-		_allocatedBundles.add(itsAllocatedBundles);
-		_allocatedAuctioneersValues.add( auctioneerValue);
-		_allocatedBiddersValues.add(biddersValues);
+		_allocatedBundles.add(itsBundle);
 		_allocationProbabilities = allocationProbabilities;
-	}
-	
-	/**
-	 * The method returns the list of values of bidders.
-	 * @return list of values of bidders
-	 */
-	public List<Double> getBiddersValues()
-	{
-		return _allocatedBiddersValues.get(0);
 	}
 	
 	/**
@@ -96,6 +85,9 @@ public class ProbabilisticAllocation extends Allocation
 			if( _allocatedBundles.get(0).get(i) == bundleId )
 				allocationProbabilityOfBundle += _allocationProbabilities.get(i); 
 		
+		if(allocationProbabilityOfBundle > 1. + 1e-6)
+			throw new RuntimeException("Probability is > 1 : " + allocationProbabilityOfBundle);
+		
 		return allocationProbabilityOfBundle;
 	}
 	
@@ -112,12 +104,11 @@ public class ProbabilisticAllocation extends Allocation
 		return numberOfAllocatedBidders;
 	}
 	
-	
 	/**
-	 * The method returns the number of different bundles
-	 * @return the number of bundles
+	 * The method returns the number of  bidders
+	 * @return the number of bidders
 	 */
-	public int getNumberOfBundles()
+	public int getNumberOfBidders()
 	{
 		return _allocationProbabilities.size();
 	}
@@ -143,5 +134,45 @@ public class ProbabilisticAllocation extends Allocation
 				_allocationProbabilities.set(i, 0.);
 	}
 	
-	private List<Double> _allocationProbabilities;  //Allocation probabilities of bidders (each bidder allocated to a single bundle).
+	/**
+	 * The method normalizes probabilities of allocation of bidders that bid for the same good.
+	 */
+	public void normalize()
+	{
+		int numberOfDBs = getNumberOfGoods();
+		
+		for(int i = 0; i < numberOfDBs; ++i  )
+		{
+			double total = 0.;
+			for(int j=0; j < _allocatedBiddersIds.get(0).size(); ++j)
+				if( _allocatedBundles.get(0).get(j) == i )
+					total += _allocationProbabilities.get(j);
+			
+			for(int j=0; j < _allocatedBiddersIds.get(0).size(); ++j)
+				if( _allocatedBundles.get(0).get(j) == i )
+					_allocationProbabilities.set(j, _allocationProbabilities.get(j)/total);
+		}
+	}
+	
+	/**
+	 * The method returns the number of different goods among all bidders.
+	 * @return the number of different goods
+	 */
+	public int getNumberOfGoods()
+	{
+		Map<Integer, Integer> goodsCounter = new HashMap<Integer, Integer>();
+		
+		for(int i = 0; i < _allocatedBundles.get(0).size(); ++i)
+		{
+			int good = _allocatedBundles.get(0).get(i);
+			if( !goodsCounter.containsKey( good ) )
+				goodsCounter.put(good, 1);
+			else
+				goodsCounter.put(good, goodsCounter.get(good) + 1);
+		}
+		
+		return goodsCounter.size();
+	}
+	
+	private List<Double> _allocationProbabilities;  	//Allocation probabilities of bidders (each bidder allocated to a single bundle).
 }

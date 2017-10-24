@@ -88,6 +88,7 @@ public class ParametrizedQuasiLinearAgent
 	public List<Double> solveConsumptionProblem(List<Double> prices, ProbabilisticAllocation allocation)
 	{
 		if( prices.get(0) != 1. ) throw new RuntimeException("Price for money must be equal to 1: " + prices.get(0));
+		_logger.debug("solveConsumptionProblem("+ Arrays.toString(prices.toArray()) + ", " + Arrays.toString(allocation.getAllocationProbabilities().toArray()) +  ")");
 		
 		List<Double> optBundle = new LinkedList<Double>();
 		double optGood0 = 0.;
@@ -126,8 +127,10 @@ public class ParametrizedQuasiLinearAgent
 	 */
 	public double computeExpectedMarginalValue(ProbabilisticAllocation allocation)
 	{
+		_logger.debug("computeExpectedMarginalValue("+ Arrays.toString(allocation.getAllocationProbabilities().toArray())+")");
+		
 		double expectedMarginalValue = 0.;
-		int numberOfPossibleDeterministicAllocations = (int)Math.pow(2, allocation.getNumberOfBundles());
+		int numberOfPossibleDeterministicAllocations = (int)Math.pow(2, allocation.getNumberOfGoods());
 		
 		for(int i = 0; i < numberOfPossibleDeterministicAllocations; i++)
 		{
@@ -146,15 +149,18 @@ public class ParametrizedQuasiLinearAgent
 	 */
 	public double computeExpectedThreshold(ProbabilisticAllocation allocation)
 	{
+		_logger.debug("computeExpectedThreshold("+ Arrays.toString(allocation.getAllocationProbabilities().toArray())+")");
 		double expectedThreshold = 0.;
 		
-		int numberOfPossibleDeterministicAllocations = (int)Math.pow(2, allocation.getNumberOfBundles());
+		int numberOfPossibleDeterministicAllocations = (int)Math.pow(2, allocation.getNumberOfGoods());
 		
 		for(int i = 0; i < numberOfPossibleDeterministicAllocations; i++)
 		{
 			double prob = computeProbabilityOfAllocation(i, allocation);
 			expectedThreshold += prob * ((LinearThresholdValueFunction)(_valueFunction.get(i))).getThreshold();
 		}
+		
+		_logger.debug("Agent " + _id + "; Expected Threshold for allocation " + allocation.toString() + " is " + expectedThreshold);
 		return expectedThreshold;
 	}
 	
@@ -166,7 +172,8 @@ public class ParametrizedQuasiLinearAgent
 	 */
 	private double computeProbabilityOfAllocation(int detAllocation, ProbabilisticAllocation probAllocation)
 	{
-		int nBundles = probAllocation.getNumberOfBundles();
+		_logger.debug("computeProbabilityOfAllocation(" + detAllocation + ", " + Arrays.toString( probAllocation.getAllocationProbabilities().toArray() ) + ")");
+		int nBundles = probAllocation.getNumberOfBidders();
 		double prob = 1;
 		
 		for(int bundle = 0; bundle < nBundles; ++bundle)
@@ -181,6 +188,8 @@ public class ParametrizedQuasiLinearAgent
 			else
 				prob *= (1-probAllocation.getAllocationProbabilityOfBundle(bundle));
 		}
+		
+		_logger.debug("The resulting prob is " + prob);
 		return prob;
 	}
 	

@@ -8,6 +8,10 @@ import org.apache.commons.math3.distribution.UniformRealDistribution;
 public class SellerType implements Type
 {
 
+	/**
+	 * Simple constructor.
+	 * @param atom an atomic bid of the seller
+	 */
 	public SellerType(AtomicBid atom)
 	{
 		_atom = atom;
@@ -38,20 +42,30 @@ public class SellerType implements Type
 		return _atom.getAgentId();
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see ch.uzh.ifi.MechanismDesignPrimitives.Type#getTypeComponent(int, java.lang.String)
+	 */
 	@Override
 	public Object getTypeComponent(int atomIdx, String key) 
 	{
-		return null;
+		if( atomIdx > 0) throw new RuntimeException("SellerType supports only one atom per seller: " + atomIdx);
+		return getTypeComponent(key);
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see ch.uzh.ifi.MechanismDesignPrimitives.Type#getTypeComponent(java.lang.String)
+	 */
+	@Override
+	public Object getTypeComponent(String key) 
+	{
+		return _atom.getTypeComponent(key);
 	}
 
 	@Override
-	public Object getTypeComponent(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setTypeComponent(int atomIdx, String key, Object componentValue) {
+	public void setTypeComponent(int atomIdx, String key, Object componentValue) 
+	{
 		// TODO Auto-generated method stub
 		
 	}
@@ -172,11 +186,20 @@ public class SellerType implements Type
 		return pdf;
 	}
 	
-	public double computeItsVirtualCost()
+	/**
+	 * The method returns the virtual cost of the seller.
+	 * @return the virtual cost of the agent
+	 */
+	public double getItsVirtualCost()
 	{
-		return this.computeVirtualCost(_atom.getValue());
+		return computeVirtualCost(_atom.getValue());
 	}
 	
+	/**
+	 * The method implements a virtual cost function of the agent.
+	 * @param cost cost of the agent
+	 * @return virtual cost of the agent at the given point
+	 */
 	public double computeVirtualCost(double cost)
 	{
 		double virtualCost = 0.;
@@ -185,12 +208,17 @@ public class SellerType implements Type
 		return virtualCost;
 	}
 	
-	public double computeInverseVirtualCost(double value)
+	/**
+	 * The method computes an inverse virtual cost function at a given point
+	 * @param virtualCost virtual cost
+	 * @return cost that is an inverse virtual cost
+	 */
+	public double computeInverseVirtualCost(double virtualCost)
 	{
 		double cost = 0.;
 		
 		if(_distribution == Distribution.UNIFORM)
-			cost = value / 2.;
+			cost = virtualCost / 2.;
 		else throw new RuntimeException("Not defined.");
 		
 		return cost;

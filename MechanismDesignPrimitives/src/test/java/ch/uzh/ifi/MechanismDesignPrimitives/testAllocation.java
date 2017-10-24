@@ -59,22 +59,18 @@ public class testAllocation {
 		bundles.add(dbID);						//Id of the bundle allocated to the 1st bidder
 		bundles.add(dbID);						//Id of the bundle allocated to the 2nd bidder
 		
-		double auctioneerValue = 0;
-		List<Double> biddersValues = new LinkedList<Double>();
-		biddersValues.add(10.);
-		biddersValues.add(12.);
-		
 		List<Double> allocationProbabilities = new LinkedList<Double>();
 		allocationProbabilities.add(0.3);
 		allocationProbabilities.add(0.7);
 		
 		try
 		{
-			allocation.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities);
+			allocation.addAllocatedAgent(auctioneerId, bidders, bundles, allocationProbabilities);
 			assertTrue(allocation.getAuctioneerId(0) == 0);
 			assertTrue(allocation.getAllocationProbabilityOfBidderById(1) == 0.3);
 			assertTrue(allocation.getAllocationProbabilityOfBidderById(2) == 0.7);
 			assertTrue(allocation.getAllocationProbabilityOfBundle(dbID) == 1.);
+			assertTrue(allocation.getNumberOfGoods() == 1);
 		}
 		catch(Exception e)
 		{
@@ -104,24 +100,20 @@ public class testAllocation {
 		bundles.add(dbID1);						//Id of the bundle allocated to the 1st bidder
 		bundles.add(dbID2);						//Id of the bundle allocated to the 2nd bidder
 		
-		double auctioneerValue = 0;
-		List<Double> biddersValues = new LinkedList<Double>();
-		biddersValues.add(10.);
-		biddersValues.add(12.);
-		
 		List<Double> allocationProbabilities = new LinkedList<Double>();
 		allocationProbabilities.add(0.3);
 		allocationProbabilities.add(1.0);
 		
 		try
 		{
-			allocation.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities);
+			allocation.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities);
 			assertTrue(allocation.getAuctioneerId(0) == 0);
 			assertTrue(allocation.getAllocationProbabilityOfBidderById(1) == 0.3);
 			assertTrue(allocation.getAllocationProbabilityOfBidderById(2) == 1.0);
 			assertTrue(allocation.getAllocationProbabilityOfBundle(dbID1) == 0.3);
 			assertTrue(allocation.getAllocationProbabilityOfBundle(dbID2) == 1.0);
 			assertTrue(allocation.getNumberOfAllocatedBundles() == 2);
+			assertTrue(allocation.getNumberOfGoods() == 2);
 		}
 		catch(Exception e)
 		{

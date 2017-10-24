@@ -54,11 +54,6 @@ public class testQuasiLinearAgent {
 		bundles.add(dbID1);						//Id of the bundle allocated to the 1st bidder
 		bundles.add(dbID2);						//Id of the bundle allocated to the 2nd bidder
 		
-		double auctioneerValue = 0;
-		List<Double> biddersValues = new LinkedList<Double>();
-		biddersValues.add(10.);
-		biddersValues.add(12.);
-		
 		List<Double> allocationProbabilities1 = new LinkedList<Double>();
 		allocationProbabilities1.add(0.5);
 		allocationProbabilities1.add(1.0);
@@ -83,12 +78,12 @@ public class testQuasiLinearAgent {
 		allocationProbabilities6.add(0.);
 		allocationProbabilities6.add(0.);
 		
-		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities1);
-		allocation2.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities2);
-		allocation3.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities3);
-		allocation4.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities4);
-		allocation5.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities5);
-		allocation6.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities6);
+		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities1);
+		allocation2.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities2);
+		allocation3.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities3);
+		allocation4.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities4);
+		allocation5.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities5);
+		allocation6.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities6);
 		
 		//Describe buyer
 		double endowment = 1;
@@ -140,17 +135,12 @@ public class testQuasiLinearAgent {
 		bundles.add(dbID1);						//Id of the bundle allocated to the 1st bidder
 		bundles.add(dbID2);						//Id of the bundle allocated to the 2nd bidder
 		
-		double auctioneerValue = 0;
-		List<Double> biddersValues = new LinkedList<Double>();
-		biddersValues.add(10.);
-		biddersValues.add(12.);
-		
 		List<Double> allocationProbabilities1 = new LinkedList<Double>();
 		allocationProbabilities1.add(0.5);
 		allocationProbabilities1.add(1.0);
 		
 		
-		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities1);
+		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, allocationProbabilities1);
 		
 		//Describe buyer
 		double endowment = 1;
@@ -199,17 +189,12 @@ public class testQuasiLinearAgent {
 		bundles.add(dbID1);						//Id of the bundle allocated to the 1st bidder
 		bundles.add(dbID2);						//Id of the bundle allocated to the 2nd bidder
 		
-		double auctioneerValue = 0;
-		List<Double> biddersValues = new LinkedList<Double>();
-		biddersValues.add(10.);
-		biddersValues.add(12.);
-		
 		List<Double> allocationProbabilities1 = new LinkedList<Double>();
 		allocationProbabilities1.add(0.5);
 		allocationProbabilities1.add(0.5);
 		
 		
-		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities1);
+		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, allocationProbabilities1);
 		
 		//Describe buyer
 		double endowment = 1;
@@ -262,17 +247,12 @@ public class testQuasiLinearAgent {
 		bundles.add(dbID1);						//Id of the bundle allocated to the 1st bidder
 		bundles.add(dbID2);						//Id of the bundle allocated to the 2nd bidder
 		
-		double auctioneerValue = 0;
-		List<Double> biddersValues = new LinkedList<Double>();
-		biddersValues.add(10.);
-		biddersValues.add(12.);
-		
 		List<Double> allocationProbabilities1 = new LinkedList<Double>();
 		allocationProbabilities1.add(0.5);
 		allocationProbabilities1.add(1.0);
 		
 		
-		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities1);
+		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, allocationProbabilities1);
 		
 		//Describe buyer
 		double endowment = 100;
@@ -335,17 +315,12 @@ public class testQuasiLinearAgent {
 		bundles.add(dbID1);						//Id of the bundle allocated to the 1st bidder
 		bundles.add(dbID2);						//Id of the bundle allocated to the 2nd bidder
 		
-		double auctioneerValue = 0;
-		List<Double> biddersValues = new LinkedList<Double>();
-		biddersValues.add(10.);
-		biddersValues.add(12.);
-		
 		List<Double> allocationProbabilities1 = new LinkedList<Double>();
 		allocationProbabilities1.add(0.5);
 		allocationProbabilities1.add(1.0);
 		
 		
-		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities1);
+		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, allocationProbabilities1);
 		
 		//Describe buyer
 		double endowment = 1;
@@ -403,18 +378,13 @@ public class testQuasiLinearAgent {
 		List<Integer> bundles = new LinkedList<Integer>();
 		bundles.add(dbID1);						//Id of the bundle allocated to the 1st bidder
 		bundles.add(dbID2);						//Id of the bundle allocated to the 2nd bidder
-		
-		double auctioneerValue = 0;
-		List<Double> biddersValues = new LinkedList<Double>();
-		biddersValues.add(10.);
-		biddersValues.add(12.);
-		
+				
 		List<Double> allocationProbabilities1 = new LinkedList<Double>();
 		allocationProbabilities1.add(0.);
 		allocationProbabilities1.add(1.0);
 		
 		
-		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, auctioneerValue, biddersValues, allocationProbabilities1);
+		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, allocationProbabilities1);
 		
 		//Describe buyer
 		double endowment = 100;
