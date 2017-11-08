@@ -38,6 +38,18 @@ public class ParametrizedQuasiLinearAgent
 	}
 	
 	/**
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString()
+	{
+		String str = "Agent id=" + _id + ":\n";
+		for(Map.Entry<Integer, IParametrizedValueFunction> entry: _valueFunction.entrySet())
+			str += entry.getKey() + " v'=" + ((LinearThresholdValueFunction)entry.getValue()).getMarginalValue() + " " + 
+					                " xMax =" + ((LinearThresholdValueFunction)entry.getValue()).getThreshold() + "\n";
+		return str;
+	}
+	/**
 	 * The method returns the endowment of the agent.
 	 * @return the endowment of the agent
 	 */
