@@ -139,17 +139,17 @@ public class ProbabilisticAllocation extends Allocation
 	 */
 	public void normalize()
 	{
-		int numberOfDBs = getNumberOfGoods();
+		int numberOfGoods = getNumberOfGoods();
 		
-		for(int i = 0; i < numberOfDBs; ++i  )
+		for(int good = 0; good < numberOfGoods; ++good  )
 		{
 			double total = 0.;
 			for(int j=0; j < _allocatedBiddersIds.get(0).size(); ++j)
-				if( _allocatedBundles.get(0).get(j) == i )
+				if( _allocatedBundles.get(0).get(j) == good )
 					total += _allocationProbabilities.get(j);
 			
 			for(int j=0; j < _allocatedBiddersIds.get(0).size(); ++j)
-				if( _allocatedBundles.get(0).get(j) == i )
+				if( _allocatedBundles.get(0).get(j) == good )
 					_allocationProbabilities.set(j, _allocationProbabilities.get(j)/total);
 		}
 	}
