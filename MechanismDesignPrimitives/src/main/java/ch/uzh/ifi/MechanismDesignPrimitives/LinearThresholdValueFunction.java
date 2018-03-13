@@ -5,8 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Dmitry Moor
- * The class implements a one-dimensional linear value function with a threshold. 
+ * The class implements a one-dimensional linear value function with a threshold.
+ * @author Dmitry Moor 
  */
 public class LinearThresholdValueFunction implements IParametrizedValueFunction
 {
