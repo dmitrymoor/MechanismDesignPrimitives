@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
 
+import org.apache.commons.math3.distribution.AbstractIntegerDistribution;
+import org.apache.commons.math3.distribution.EnumeratedIntegerDistribution;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -79,6 +81,9 @@ public class ParametrizedQuasiLinearAgent
 		double money = bundle.get(0);
 		double goods = bundle.get(1);							//Only one good for now
 		
+		// Generate probability distribution over deterministic allocations
+		updateAllocProbabilityDistribution(allocation);
+		
 		double expectedMarginalValue = computeExpectedMarginalValue(allocation);
 		double expectedThreshold = computeExpectedThreshold(allocation);
 		
@@ -88,6 +93,25 @@ public class ParametrizedQuasiLinearAgent
 			return expectedMarginalValue * goods + money;
 		else
 			return expectedMarginalValue * expectedThreshold + money;
+	}
+	
+	/**
+	 * 
+	 * @param probAllocation
+	 */
+	public void updateAllocProbabilityDistribution(ProbabilisticAllocation probAllocation)
+	{
+		int numberOfDeterministicAllocations = (int)Math.pow(2, probAllocation.getNumberOfGoods());
+		int[] detAllocations = new int[numberOfDeterministicAllocations]; 
+		double[] probabilities = new double[numberOfDeterministicAllocations];
+
+		for(int i = 0; i < numberOfDeterministicAllocations; i++)
+		{
+			detAllocations[i] = i;
+			probabilities[i] = computeProbabilityOfAllocation(detAllocations[i], probAllocation);
+		}
+		
+		_allocProbDistribution = new EnumeratedIntegerDistribution(detAllocations, probabilities);
 	}
 	
 	/**
@@ -107,6 +131,10 @@ public class ParametrizedQuasiLinearAgent
 		double optGood0 = 0.;
 		double optGood1 = 0.;
 		
+		// Generate probability distribution over deterministic allocations
+		updateAllocProbabilityDistribution(allocation);
+		
+		// Compute the expected marginal value and threshold under the probability distribution
 		double expectedMarginalValue = computeExpectedMarginalValue(allocation); 
 		double expectedThreshold = computeExpectedThreshold(allocation); 
 		_logger.debug("Agent: " + _id + ". expectedMarginalValue=" + expectedMarginalValue);
@@ -132,50 +160,50 @@ public class ParametrizedQuasiLinearAgent
 	
 	/**
 	 * The method computes expected marginal value corresponding to the specified probabilistic allocation of DBs
-	 * @param allocation probabilistic allocation of DBs
+	 * @param probAllocation probabilistic allocation of DBs
 	 * @return expected marginal value
 	 */
-	public double computeExpectedMarginalValue(ProbabilisticAllocation allocation)
+	public double computeExpectedMarginalValue(ProbabilisticAllocation probAllocation)
 	{
-		_logger.debug("computeExpectedMarginalValue("+ Arrays.toString(allocation.getAllocationProbabilities().toArray())+")");
+		_logger.debug("computeExpectedMarginalValue("+ Arrays.toString(probAllocation.getAllocationProbabilities().toArray())+")");
 		
 		double expectedMarginalValue = 0.;
-		int numberOfPossibleDeterministicAllocations = (int)Math.pow(2, allocation.getNumberOfGoods());
+		int numberOfDeterministicAllocations = (int)Math.pow(2, probAllocation.getNumberOfGoods());
 		
-		for(int i = 0; i < numberOfPossibleDeterministicAllocations; i++)
+		for(int detAllocation = 0; detAllocation < numberOfDeterministicAllocations; detAllocation++)
 		{
-			double prob = computeProbabilityOfAllocation(i, allocation);
-			expectedMarginalValue += prob * ((LinearThresholdValueFunction)(_valueFunction.get(i))).getMarginalValue();
+			double prob = _allocProbDistribution.probability(detAllocation);
+			expectedMarginalValue += prob * ((LinearThresholdValueFunction)(_valueFunction.get(detAllocation))).getMarginalValue();
 		}
 		
-		_logger.debug("Agent " + _id + "; Expected Marginal Value for allocation " + allocation.toString() + " is " + expectedMarginalValue);
+		_logger.debug("Agent " + _id + "; Expected Marginal Value for allocation " + probAllocation.toString() + " is " + expectedMarginalValue);
 		return expectedMarginalValue;
 	}
 	
 	/**
 	 * The method computes expected threshold corresponding to the specified probabilistic allocation of DBs
-	 * @param allocation probabilistic allocation of DBs
+	 * @param probAllocation probabilistic allocation of DBs
 	 * @return expected threshold
 	 */
-	public double computeExpectedThreshold(ProbabilisticAllocation allocation)
+	public double computeExpectedThreshold(ProbabilisticAllocation probAllocation)
 	{
-		_logger.debug("computeExpectedThreshold("+ Arrays.toString(allocation.getAllocationProbabilities().toArray())+")");
+		_logger.debug("computeExpectedThreshold("+ Arrays.toString(probAllocation.getAllocationProbabilities().toArray())+")");
 		double expectedThreshold = 0.;
 		
-		int numberOfPossibleDeterministicAllocations = (int)Math.pow(2, allocation.getNumberOfGoods());
+		int numberOfDeterministicAllocations = (int)Math.pow(2, probAllocation.getNumberOfGoods());
 		
-		for(int i = 0; i < numberOfPossibleDeterministicAllocations; i++)
+		for(int detAllocation = 0; detAllocation < numberOfDeterministicAllocations; detAllocation++)
 		{
-			double prob = computeProbabilityOfAllocation(i, allocation);
-			expectedThreshold += prob * ((LinearThresholdValueFunction)(_valueFunction.get(i))).getThreshold();
+			double prob = _allocProbDistribution.probability(detAllocation);
+			expectedThreshold += prob * ((LinearThresholdValueFunction)(_valueFunction.get(detAllocation))).getThreshold();
 		}
 		
-		_logger.debug("Agent " + _id + "; Expected Threshold for allocation " + allocation.toString() + " is " + expectedThreshold);
+		_logger.debug("Agent " + _id + "; Expected Threshold for allocation " + probAllocation.toString() + " is " + expectedThreshold);
 		return expectedThreshold;
 	}
 	
 	/**
-	 * The method computes probability of deterministic allocation i to happen given the probabilistic allocation.
+	 * The method computes probability of a particular deterministic allocation to happen given the probabilistic allocation.
 	 * @param detAllocation deterministic allocation encoded as a binary integer
 	 * @param probAllocation probabilistic allocation of DBs
 	 * @return probability of detAllocation to happen
@@ -183,28 +211,29 @@ public class ParametrizedQuasiLinearAgent
 	private double computeProbabilityOfAllocation(int detAllocation, ProbabilisticAllocation probAllocation)
 	{
 		_logger.debug("computeProbabilityOfAllocation(" + detAllocation + ", " + Arrays.toString( probAllocation.getAllocationProbabilities().toArray() ) + ")");
-		int nBundles = probAllocation.getNumberOfBidders();
+		int nGoods = probAllocation.getNumberOfBidders();						// Single-minded bidders
 		double prob = 1;
 		
-		for(int bundle = 0; bundle < nBundles; ++bundle)
+		for(int good = 0; good < nGoods; ++good)
 		{
-			//First, check if the bundle needs to be allocated under detAllocation
+			//First, check if the good (DB) needs to be allocated under detAllocation
 			int isAllocated = 1;
-			isAllocated = isAllocated << bundle;
+			isAllocated = isAllocated << good;
 			
 			//Then, use the probability of the bundle to be allocated if it is required by detAllocation
 			if( (isAllocated & detAllocation) > 0)
-				prob *= probAllocation.getAllocationProbabilityOfBundle(bundle);
+				prob *= probAllocation.getAllocationProbabilityOfBundle(good);
 			else
-				prob *= (1-probAllocation.getAllocationProbabilityOfBundle(bundle));
+				prob *= (1-probAllocation.getAllocationProbabilityOfBundle(good));
 		}
 		
 		_logger.debug("The resulting prob is " + prob);
 		return prob;
 	}
 	
-	private int _id;													//Agent id
-	private double _endowment;											//Initial endowment of the consumer with money
-	private Map<Integer, IParametrizedValueFunction> _valueFunction;	//Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
-	private double _arrowPrattIdx;										//Risk-aversion measure	
+	private int _id;													// Agent id
+	private double _endowment;											// Initial endowment of the consumer with money
+	private Map<Integer, IParametrizedValueFunction> _valueFunction;	// Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
+	private double _arrowPrattIdx;										// Risk-aversion measure	
+	private AbstractIntegerDistribution _allocProbDistribution;			// Probability distribution over deterministic allocations
 }
