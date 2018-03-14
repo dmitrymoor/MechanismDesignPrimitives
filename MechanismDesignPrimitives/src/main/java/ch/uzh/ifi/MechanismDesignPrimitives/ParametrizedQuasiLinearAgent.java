@@ -109,8 +109,9 @@ public class ParametrizedQuasiLinearAgent
 		{
 			detAllocations[i] = i;
 			probabilities[i] = computeProbabilityOfAllocation(detAllocations[i], probAllocation);
+			if( probabilities[i] < 0. && probabilities[i] > -1e-6 )
+				probabilities[i] = 0.;
 		}
-		
 		_allocProbDistribution = new EnumeratedIntegerDistribution(detAllocations, probabilities);
 	}
 	
