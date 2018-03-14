@@ -96,8 +96,8 @@ public class ParametrizedQuasiLinearAgent
 	}
 	
 	/**
-	 * 
-	 * @param probAllocation
+	 * The method updates the probability distribution over deterministic allocations.
+	 * @param probAllocation probabilistic allocation
 	 */
 	public void updateAllocProbabilityDistribution(ProbabilisticAllocation probAllocation)
 	{
