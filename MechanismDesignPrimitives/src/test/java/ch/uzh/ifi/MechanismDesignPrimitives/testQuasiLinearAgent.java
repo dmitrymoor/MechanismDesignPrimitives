@@ -166,6 +166,7 @@ public class testQuasiLinearAgent {
 		bundle.add(0.);
 		bundle.add(1.5);
 		
+		agent.updateAllocProbabilityDistribution(allocation1);
 		assertTrue(Math.abs(agent.computeExpectedMarginalValue(allocation1)-2.5 ) < 1e-6);
 		assertTrue(Math.abs(agent.computeExpectedThreshold(allocation1)-1.5) < 1e-6);
 		assertTrue(Math.abs(agent.computeUtility(allocation1, bundle)-3.75)<1e-6);
@@ -220,6 +221,7 @@ public class testQuasiLinearAgent {
 		bundle.add(0.);
 		bundle.add(1.5);
 		
+		agent.updateAllocProbabilityDistribution(allocation1);
 		assertTrue(Math.abs(agent.computeExpectedMarginalValue(allocation1)-1.5 ) < 1e-6);
 		assertTrue(Math.abs(agent.computeExpectedThreshold(allocation1)-1.25) < 1e-6);
 		assertTrue(Math.abs(agent.computeUtility(allocation1, bundle)-1.5*1.25)<1e-6);
@@ -280,6 +282,7 @@ public class testQuasiLinearAgent {
 		
 		List<Double> prices = new LinkedList<Double>();
 		prices.add(1.0);
+		agent.updateAllocProbabilityDistribution(allocation1);
 		prices.add( agent.computeExpectedMarginalValue(allocation1)-1e-6);
 		
 		List<Double> consumptionBundle = agent.solveConsumptionProblem(prices, allocation1);
@@ -348,6 +351,7 @@ public class testQuasiLinearAgent {
 		
 		List<Double> prices = new LinkedList<Double>();
 		prices.add(1.0);
+		agent.updateAllocProbabilityDistribution(allocation1);
 		prices.add( agent.computeExpectedMarginalValue(allocation1)-1e-6);
 		
 		List<Double> consumptionBundle = agent.solveConsumptionProblem(prices, allocation1);
@@ -406,6 +410,7 @@ public class testQuasiLinearAgent {
 		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, allocations, valueFunctions);
 		
 		//Compute utility of the buyer for the given probabilistic allocation and bundle
+		agent.updateAllocProbabilityDistribution(allocation1);
 		assertTrue(Math.abs( agent.computeExpectedMarginalValue(allocation1) - 4.) < 1e-6);
 		
 		List<Double> prices = new LinkedList<Double>();
