@@ -19,7 +19,7 @@ public class ProbabilisticAllocation extends Allocation
 	 */
 	public ProbabilisticAllocation()
 	{
-		
+		_numberOfGoods = -1;
 	}
 	
 	/**
@@ -40,6 +40,7 @@ public class ProbabilisticAllocation extends Allocation
 		_allocatedBiddersIds.add( bidders );
 		_allocatedBundles.add( itsBundle );
 		_allocationProbabilities = allocationProbabilities;
+		_numberOfGoods = computeNumberOfGoods();
 	}
 	
 	/**
@@ -155,11 +156,23 @@ public class ProbabilisticAllocation extends Allocation
 	}
 	
 	/**
-	 * The method returns the number of different goods among all bidders.
+	 * The method returns the number of different goods.
 	 * @return the number of different goods
 	 */
 	public int getNumberOfGoods()
 	{
+		if( _numberOfGoods < 0) throw new RuntimeException("The number of goods was not initialized: ");
+		return _numberOfGoods;
+	}
+	
+	/**
+	 * The method calculates the number of different goods.
+	 * @return the number of different goods
+	 */
+	private int computeNumberOfGoods()
+	{
+		if(_numberOfGoods >= 0) throw new RuntimeException("The number of goods was already computed before.");
+		
 		Map<Integer, Integer> goodsCounter = new HashMap<Integer, Integer>();
 		
 		for(int i = 0; i < _allocatedBundles.get(0).size(); ++i)
@@ -171,8 +184,10 @@ public class ProbabilisticAllocation extends Allocation
 				goodsCounter.put(good, goodsCounter.get(good) + 1);
 		}
 		
-		return goodsCounter.size();
+		_numberOfGoods = goodsCounter.size();
+		return _numberOfGoods;
 	}
 	
-	private List<Double> _allocationProbabilities;  	//Allocation probabilities of bidders (each bidder allocated to a single bundle).
+	private List<Double> _allocationProbabilities;  	// Allocation probabilities of bidders (each bidder allocated to a single bundle).
+	private int _numberOfGoods;							// Number of different goods
 }
