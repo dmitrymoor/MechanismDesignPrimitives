@@ -91,7 +91,7 @@ public class ParametrizedQuasiLinearAgent
 	}
 	
 	/**
-	 * The method solves the consumption problem of the agent given market prices.
+	 * The method solves the consumption problem of the agent given market prices and allocation of DBs.
 	 * @param prices market prices for goods
 	 * @param allocation probabilistic allocation of DBs
 	 * @return the optimal consumption bundle
@@ -99,22 +99,20 @@ public class ParametrizedQuasiLinearAgent
 	 */
 	public List<Double> solveConsumptionProblem(List<Double> prices, ProbabilisticAllocation allocation)
 	{
-		if( prices.get(0) != 1. ) throw new RuntimeException("Price for money must be equal to 1: " + prices.get(0));
+		if( prices.get(0) != 1. ) throw new RuntimeException("Price for money must be equal to 1 (normalization): " + prices.get(0));
 		_logger.debug("solveConsumptionProblem("+ Arrays.toString(prices.toArray()) + ", " + Arrays.toString(allocation.getAllocationProbabilities().toArray()) +  ")");
 		
+		// Optimal bundle
 		List<Double> optBundle = new LinkedList<Double>();
 		double optGood0 = 0.;
 		double optGood1 = 0.;
-		
-		List<Double> singleGoodBundle = new LinkedList<Double>();
-		singleGoodBundle.add(0.);
-		singleGoodBundle.add(1.);
 		
 		double expectedMarginalValue = computeExpectedMarginalValue(allocation); 
 		double expectedThreshold = computeExpectedThreshold(allocation); 
 		_logger.debug("Agent: " + _id + ". expectedMarginalValue=" + expectedMarginalValue);
 		_logger.debug("Agent: " + _id + ". expectedThreshold=" + expectedThreshold);
 		
+		// If the marginal value is smaller than the price, then don't consume. Otherwise, consume the maximum amount.
 		if( prices.get(1) <= expectedMarginalValue )
 			optGood1 = expectedThreshold;
 		else 
