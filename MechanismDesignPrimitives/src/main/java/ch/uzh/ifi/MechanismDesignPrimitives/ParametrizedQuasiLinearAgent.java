@@ -115,6 +115,16 @@ public class ParametrizedQuasiLinearAgent
 		_allocProbDistribution = new EnumeratedIntegerDistribution(detAllocations, probabilities);
 	}
 	
+	public AbstractIntegerDistribution getAllocProbabilityDistribution()
+	{
+		return _allocProbDistribution;
+	}
+	
+	public void setAllocProbabilityDistribution(AbstractIntegerDistribution allocProbDistribution)
+	{
+		_allocProbDistribution = allocProbDistribution;
+	}
+	
 	/**
 	 * The method solves the consumption problem of the agent given market prices and allocation of DBs.
 	 * @param prices market prices for goods
@@ -133,7 +143,7 @@ public class ParametrizedQuasiLinearAgent
 		double optGood1 = 0.;
 		
 		// Generate probability distribution over deterministic allocations
-		updateAllocProbabilityDistribution(allocation);
+		//updateAllocProbabilityDistribution(allocation);
 		
 		// Compute the expected marginal value and threshold under the probability distribution
 		double expectedMarginalValue = computeExpectedMarginalValue(allocation); 
