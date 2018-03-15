@@ -142,9 +142,6 @@ public class ParametrizedQuasiLinearAgent
 		double optGood0 = 0.;
 		double optGood1 = 0.;
 		
-		// Generate probability distribution over deterministic allocations
-		//updateAllocProbabilityDistribution(allocation);
-		
 		// Compute the expected marginal value and threshold under the probability distribution
 		double expectedMarginalValue = computeExpectedMarginalValue(allocation); 
 		double expectedThreshold = computeExpectedThreshold(allocation); 
