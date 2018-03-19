@@ -26,16 +26,12 @@ public class ParametrizedQuasiLinearAgent
 	 * @param allocations an array of binary encoded deterministic allocations of DBs. An element i=0xabc of the array encodes the binary
 	 *        allocation of the 1st DB, a={0,1}, of the second, b={0,1} and of the 3rd one, i.e., c={0,1}
 	 */
-	public ParametrizedQuasiLinearAgent(int id, double endowment, int[] allocations, IParametrizedValueFunction[] valueFunctions)
+	public ParametrizedQuasiLinearAgent(int id, double endowment, Map<Integer, LinearThresholdValueFunction> valueFunctions)
 	{
-		if(allocations.length != valueFunctions.length) throw new RuntimeException("Dimensionality mismatch.");
-		_logger.debug("ParametrizedQuasiLinearAgent::ParametrizedQuasiLinearAgent("+id+", "+endowment+", " + Arrays.toString(allocations) + ", valueFunctions)");
+		_logger.debug("ParametrizedQuasiLinearAgent::ParametrizedQuasiLinearAgent("+id+", "+endowment+", valueFunctions)");
 		
 		_id = id;
-		_valueFunction = new HashMap<Integer, IParametrizedValueFunction>();
-		for(int i = 0; i < allocations.length; ++i)
-			_valueFunction.put(allocations[i], valueFunctions[i]);
-		
+		_valueFunction = valueFunctions;
 		_endowment = endowment;
 	}
 	
@@ -46,9 +42,9 @@ public class ParametrizedQuasiLinearAgent
 	public String toString()
 	{
 		String str = "Agent id=" + _id + ":\n";
-		for(Map.Entry<Integer, IParametrizedValueFunction> entry: _valueFunction.entrySet())
-			str += entry.getKey() + " v'=" + ((LinearThresholdValueFunction)entry.getValue()).getMarginalValue() + " " + 
-					                " xMax =" + ((LinearThresholdValueFunction)entry.getValue()).getThreshold() + "\n";
+		for(Map.Entry<Integer, LinearThresholdValueFunction> entry: _valueFunction.entrySet())
+			str += entry.getKey() + " v'=" + entry.getValue().getMarginalValue() + " " + 
+					                " xMax =" + entry.getValue().getThreshold() + "\n";
 		return str;
 	}
 	/**
@@ -241,7 +237,7 @@ public class ParametrizedQuasiLinearAgent
 	
 	private int _id;													// Agent id
 	private double _endowment;											// Initial endowment of the consumer with money
-	private Map<Integer, IParametrizedValueFunction> _valueFunction;	// Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
+	private Map<Integer, LinearThresholdValueFunction> _valueFunction;	// Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
 	private double _arrowPrattIdx;										// Risk-aversion measure	
 	private AbstractIntegerDistribution _allocProbDistribution;			// Probability distribution over deterministic allocations
 }

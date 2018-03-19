@@ -2,8 +2,10 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -16,19 +18,23 @@ public class testQuasiLinearAgent {
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
 		double[] alloc1 = {0,0};
-		IParametrizedValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
+		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
 		double[] alloc2 = {0,1};
-		IParametrizedValueFunction v2 = new LinearThresholdValueFunction(4, 1, alloc2);
+		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(4, 1, alloc2);
 		
 		double[] alloc3 = {1,0};
-		IParametrizedValueFunction v3 = new LinearThresholdValueFunction(4, 1, alloc3);
+		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(4, 1, alloc3);
 		
 		double[] alloc4 = {1,1};
-		IParametrizedValueFunction v4 = new LinearThresholdValueFunction(6, 0, alloc4);
-		
-		IParametrizedValueFunction[] valueFunctions = {v1, v2, v3, v4};
-		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, allocations, valueFunctions);
+		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(6, 0, alloc4);
+				
+		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
+		valueFunctions.put(0, v1);
+		valueFunctions.put(1, v2);
+		valueFunctions.put(2, v3);
+		valueFunctions.put(3, v4);
+		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, valueFunctions);
 	}
 
 	@Test
@@ -42,7 +48,7 @@ public class testQuasiLinearAgent {
 		ProbabilisticAllocation allocation5 = new ProbabilisticAllocation();
 		ProbabilisticAllocation allocation6 = new ProbabilisticAllocation();
 		
-		int auctioneerId = 0; 				//The market platform, M
+		int auctioneerId = 0; 					//The market platform, M
 		
 		List<Integer> bidders = new LinkedList<Integer>();
 		bidders.add(1);
@@ -90,19 +96,23 @@ public class testQuasiLinearAgent {
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
 		double[] alloc1 = {0,0};
-		IParametrizedValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
+		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
 		double[] alloc2 = {0,1};
-		IParametrizedValueFunction v2 = new LinearThresholdValueFunction(4, 1, alloc2);
+		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(4, 1, alloc2);
 		
 		double[] alloc3 = {1,0};
-		IParametrizedValueFunction v3 = new LinearThresholdValueFunction(4, 1, alloc3);
+		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(4, 1, alloc3);
 		
 		double[] alloc4 = {1,1};
-		IParametrizedValueFunction v4 = new LinearThresholdValueFunction(6, 1, alloc4);
+		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(6, 1, alloc4);
 		
-		IParametrizedValueFunction[] valueFunctions = {v1, v2, v3, v4};
-		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, allocations, valueFunctions);
+		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
+		valueFunctions.put(0, v1);
+		valueFunctions.put(1, v2);
+		valueFunctions.put(2, v3);
+		valueFunctions.put(3, v4);
+		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, valueFunctions);
 		
 		//Compute utility of the buyer for the given probabilistic allocation and bundle
 		List<Double> bundle = new LinkedList<Double>();
@@ -116,6 +126,7 @@ public class testQuasiLinearAgent {
 		assertTrue(Math.abs(agent.computeUtility(allocation5, bundle)-2.625)<1e-6);
 		assertTrue(Math.abs(agent.computeUtility(allocation6, bundle)-0.0)<1e-6);
 	}
+	
 	
 	@Test
 	public void testUtility1() throws Exception
@@ -147,19 +158,23 @@ public class testQuasiLinearAgent {
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
 		double[] alloc1 = {0,0};
-		IParametrizedValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
+		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
 		double[] alloc2 = {0,1};
-		IParametrizedValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
+		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
 		
 		double[] alloc3 = {1,0};
-		IParametrizedValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
+		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
 		
 		double[] alloc4 = {1,1};
-		IParametrizedValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
+		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
 		
-		IParametrizedValueFunction[] valueFunctions = {v1, v2, v3, v4};
-		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, allocations, valueFunctions);
+		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
+		valueFunctions.put(0, v1);
+		valueFunctions.put(1, v2);
+		valueFunctions.put(2, v3);
+		valueFunctions.put(3, v4);
+		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, valueFunctions);
 		
 		//Compute utility of the buyer for the given probabilistic allocation and bundle
 		List<Double> bundle = new LinkedList<Double>();
@@ -202,19 +217,23 @@ public class testQuasiLinearAgent {
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
 		double[] alloc1 = {0,0};
-		IParametrizedValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
+		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
 		double[] alloc2 = {0,1};
-		IParametrizedValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
+		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
 		
 		double[] alloc3 = {1,0};
-		IParametrizedValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
+		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
 		
 		double[] alloc4 = {1,1};
-		IParametrizedValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
+		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
 		
-		IParametrizedValueFunction[] valueFunctions = {v1, v2, v3, v4};
-		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, allocations, valueFunctions);
+		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
+		valueFunctions.put(0, v1);
+		valueFunctions.put(1, v2);
+		valueFunctions.put(2, v3);
+		valueFunctions.put(3, v4);
+		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, valueFunctions);
 		
 		//Compute utility of the buyer for the given probabilistic allocation and bundle
 		List<Double> bundle = new LinkedList<Double>();
@@ -261,19 +280,23 @@ public class testQuasiLinearAgent {
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
 		double[] alloc1 = {0,0};
-		IParametrizedValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
+		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
 		double[] alloc2 = {0,1};
-		IParametrizedValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
+		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
 		
 		double[] alloc3 = {1,0};
-		IParametrizedValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
+		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
 		
 		double[] alloc4 = {1,1};
-		IParametrizedValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
+		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
 		
-		IParametrizedValueFunction[] valueFunctions = {v1, v2, v3, v4};
-		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, allocations, valueFunctions);
+		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
+		valueFunctions.put(0, v1);
+		valueFunctions.put(1, v2);
+		valueFunctions.put(2, v3);
+		valueFunctions.put(3, v4);
+		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, valueFunctions);
 		
 		//Compute utility of the buyer for the given probabilistic allocation and bundle
 		List<Double> bundle = new LinkedList<Double>();
@@ -330,19 +353,23 @@ public class testQuasiLinearAgent {
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
 		double[] alloc1 = {0,0};
-		IParametrizedValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
+		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
 		double[] alloc2 = {0,1};
-		IParametrizedValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
+		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
 		
 		double[] alloc3 = {1,0};
-		IParametrizedValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
+		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
 		
 		double[] alloc4 = {1,1};
-		IParametrizedValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
+		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
 		
-		IParametrizedValueFunction[] valueFunctions = {v1, v2, v3, v4};
-		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, allocations, valueFunctions);
+		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
+		valueFunctions.put(0, v1);
+		valueFunctions.put(1, v2);
+		valueFunctions.put(2, v3);
+		valueFunctions.put(3, v4);
+		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, valueFunctions);
 		
 		//Compute utility of the buyer for the given probabilistic allocation and bundle
 		List<Double> bundle = new LinkedList<Double>();
@@ -395,19 +422,23 @@ public class testQuasiLinearAgent {
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
 		double[] alloc1 = {0,0};
-		IParametrizedValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
+		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
 		double[] alloc2 = {0,1};
-		IParametrizedValueFunction v2 = new LinearThresholdValueFunction(4, 1, alloc2);
+		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(4, 1, alloc2);
 		
 		double[] alloc3 = {1,0};
-		IParametrizedValueFunction v3 = new LinearThresholdValueFunction(4, 1, alloc3);
+		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(4, 1, alloc3);
 		
 		double[] alloc4 = {1,1};
-		IParametrizedValueFunction v4 = new LinearThresholdValueFunction(6, 1, alloc4);
+		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(6, 1, alloc4);
 		
-		IParametrizedValueFunction[] valueFunctions = {v1, v2, v3, v4};
-		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, allocations, valueFunctions);
+		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
+		valueFunctions.put(0, v1);
+		valueFunctions.put(1, v2);
+		valueFunctions.put(2, v3);
+		valueFunctions.put(3, v4);
+		ParametrizedQuasiLinearAgent agent = new ParametrizedQuasiLinearAgent(1, endowment, valueFunctions);
 		
 		//Compute utility of the buyer for the given probabilistic allocation and bundle
 		agent.updateAllocProbabilityDistribution(allocation1);
