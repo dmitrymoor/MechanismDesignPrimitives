@@ -2,6 +2,9 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 
 public class testValueFunction {
@@ -11,7 +14,7 @@ public class testValueFunction {
 	{
 		double marginalValue = 1.5;
 		double threshold = 4;
-		double params[] = {0,1,0};
+		List<Double> params = Arrays.asList(0., 1., 0.);
 		IParametrizedValueFunction valueFunction = new LinearThresholdValueFunction(marginalValue, threshold, params);
 		
 		double quantities[] = {0};

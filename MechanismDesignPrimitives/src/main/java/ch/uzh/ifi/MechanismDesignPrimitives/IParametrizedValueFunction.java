@@ -1,5 +1,7 @@
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
+import java.util.List;
+
 /**
  * An interface for different value functions of consumers.
  * @author Dmitry Moor
@@ -19,5 +21,5 @@ public interface IParametrizedValueFunction
 	 * The method sets the parameters of the parameterized value function.
 	 * @param params an array of parameters of the parameterized value function.
 	 */
-	void setParams(double[] params);
+	void setParams(List<Double> params);
 }

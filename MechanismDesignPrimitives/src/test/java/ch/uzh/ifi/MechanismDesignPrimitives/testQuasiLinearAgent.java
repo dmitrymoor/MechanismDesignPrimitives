@@ -2,6 +2,7 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,16 +18,16 @@ public class testQuasiLinearAgent {
 		double endowment = 1;
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
-		double[] alloc1 = {0,0};
+		List<Double> alloc1 = Arrays.asList(0., 0.);
 		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
-		double[] alloc2 = {0,1};
+		List<Double> alloc2 = Arrays.asList(0., 1.);
 		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(4, 1, alloc2);
 		
-		double[] alloc3 = {1,0};
+		List<Double> alloc3 = Arrays.asList(1., 0.);
 		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(4, 1, alloc3);
 		
-		double[] alloc4 = {1,1};
+		List<Double> alloc4 = Arrays.asList(1., 1.);
 		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(6, 0, alloc4);
 				
 		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
@@ -95,16 +96,16 @@ public class testQuasiLinearAgent {
 		double endowment = 1;
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
-		double[] alloc1 = {0,0};
+		List<Double> alloc1 = Arrays.asList(0., 0.);
 		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
-		double[] alloc2 = {0,1};
+		List<Double> alloc2 = Arrays.asList(0., 1.);
 		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(4, 1, alloc2);
 		
-		double[] alloc3 = {1,0};
+		List<Double> alloc3 = Arrays.asList(1., 0.);
 		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(4, 1, alloc3);
 		
-		double[] alloc4 = {1,1};
+		List<Double> alloc4 = Arrays.asList(1., 1.);
 		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(6, 1, alloc4);
 		
 		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
@@ -157,16 +158,16 @@ public class testQuasiLinearAgent {
 		double endowment = 1;
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
-		double[] alloc1 = {0,0};
+		List<Double> alloc1 = Arrays.asList(0., 0.);
 		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
-		double[] alloc2 = {0,1};
+		List<Double> alloc2 = Arrays.asList(0., 1.);
 		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
 		
-		double[] alloc3 = {1,0};
+		List<Double> alloc3 = Arrays.asList(1., 0.);
 		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
 		
-		double[] alloc4 = {1,1};
+		List<Double> alloc4 = Arrays.asList(1., 1.);
 		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
 		
 		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
@@ -216,16 +217,16 @@ public class testQuasiLinearAgent {
 		double endowment = 1;
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
-		double[] alloc1 = {0,0};
+		List<Double> alloc1 = Arrays.asList(0., 0.);
 		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
-		double[] alloc2 = {0,1};
+		List<Double> alloc2 = Arrays.asList(0., 1.);
 		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
 		
-		double[] alloc3 = {1,0};
+		List<Double> alloc3 = Arrays.asList(1., 0.);
 		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
 		
-		double[] alloc4 = {1,1};
+		List<Double> alloc4 = Arrays.asList(1., 1.);
 		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
 		
 		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
@@ -279,16 +280,16 @@ public class testQuasiLinearAgent {
 		double endowment = 100;
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
-		double[] alloc1 = {0,0};
+		List<Double> alloc1 = Arrays.asList(0., 0.);
 		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
-		double[] alloc2 = {0,1};
+		List<Double> alloc2 = Arrays.asList(0., 1.);
 		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
 		
-		double[] alloc3 = {1,0};
+		List<Double> alloc3 = Arrays.asList(1., 0.);
 		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
 		
-		double[] alloc4 = {1,1};
+		List<Double> alloc4 = Arrays.asList(1., 1.);
 		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
 		
 		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
@@ -352,16 +353,16 @@ public class testQuasiLinearAgent {
 		double endowment = 1;
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
-		double[] alloc1 = {0,0};
+		List<Double> alloc1 = Arrays.asList(0., 0.);
 		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
-		double[] alloc2 = {0,1};
+		List<Double> alloc2 = Arrays.asList(0., 1.);
 		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(1, 2, alloc2);
 		
-		double[] alloc3 = {1,0};
+		List<Double> alloc3 = Arrays.asList(1., 0.);
 		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(1, 2, alloc3);
 		
-		double[] alloc4 = {1,1};
+		List<Double> alloc4 = Arrays.asList(1., 1.);
 		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(4, 1, alloc4);
 		
 		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();
@@ -421,16 +422,16 @@ public class testQuasiLinearAgent {
 		double endowment = 100;
 		int allocations[] = {0b00, 0b01, 0b10, 0b11};	// 4 possible allocations
 		
-		double[] alloc1 = {0,0};
+		List<Double> alloc1 = Arrays.asList(0., 0.);
 		LinearThresholdValueFunction v1 = new LinearThresholdValueFunction(0, 0, alloc1);
 		
-		double[] alloc2 = {0,1};
+		List<Double> alloc2 = Arrays.asList(0., 1.);
 		LinearThresholdValueFunction v2 = new LinearThresholdValueFunction(4, 1, alloc2);
 		
-		double[] alloc3 = {1,0};
+		List<Double> alloc3 = Arrays.asList(1., 0.);
 		LinearThresholdValueFunction v3 = new LinearThresholdValueFunction(4, 1, alloc3);
 		
-		double[] alloc4 = {1,1};
+		List<Double> alloc4 = Arrays.asList(1., 1.);
 		LinearThresholdValueFunction v4 = new LinearThresholdValueFunction(6, 1, alloc4);
 		
 		Map<Integer, LinearThresholdValueFunction> valueFunctions = new HashMap<Integer, LinearThresholdValueFunction>();

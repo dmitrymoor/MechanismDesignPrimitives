@@ -1,6 +1,9 @@
 
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +32,7 @@ public class LinearThresholdValueFunction implements IParametrizedValueFunction
 	 * @param threshold the threshold value
 	 * @param params parameters of the parameterized value function.
 	 */
-	public LinearThresholdValueFunction(double marginalValue, double threshold, double[] params)
+	public LinearThresholdValueFunction(double marginalValue, double threshold, List<Double> params)
 	{
 		_logger.debug("LinearThresholdValueFunction::LinearThresholdValueFunction(...)");
 		this.setMarginalValue(marginalValue);
@@ -57,11 +60,9 @@ public class LinearThresholdValueFunction implements IParametrizedValueFunction
 	 * @see ch.uzh.ifi.MechanismDesignPrimitives.IParametrizedValueFunction#setParams(double[])
 	 */
 	@Override
-	public void setParams(double[] params) 
+	public void setParams(List<Double> params) 
 	{
-		_params = new double[params.length];
-		for(int i = 0; i < params.length; ++i)
-			this._params[i] = params[i];
+		_params = params;
 	}
 	
 	/**
@@ -104,5 +105,5 @@ public class LinearThresholdValueFunction implements IParametrizedValueFunction
 
 	private double _marginalValue;				//Marginal value of the single good
 	private double _threshold;					//The maximum amount of the good for which the agent has positive marginal value
-	private double[] _params;					//Parameters of the value function 
+	private List<Double> _params;					//Parameters of the value function 
 }
