@@ -105,10 +105,13 @@ public class ParametrizedQuasiLinearAgent
 		{
 			detAllocations[i] = i;
 			probabilities[i] = computeProbabilityOfAllocation(detAllocations[i], probAllocation);
+
 			if( probabilities[i] < 0. && probabilities[i] > -1e-6 )
 				probabilities[i] = 0.;
+			else if ( probabilities[i] < 0. ) throw new RuntimeException("Negative prob: " + probabilities[i]);
 		}
 		_allocProbDistribution = new EnumeratedIntegerDistribution(detAllocations, probabilities);
+		
 	}
 	
 	public AbstractIntegerDistribution getAllocProbabilityDistribution()
@@ -164,7 +167,7 @@ public class ParametrizedQuasiLinearAgent
 	
 	/**
 	 * The method computes expected marginal value corresponding to the specified probabilistic allocation of DBs
-	 * @param probAllocation probabilistic allocation of DBs
+	 * @param probAllocation probabilistic allocation of sellers
 	 * @return expected marginal value
 	 */
 	public double computeExpectedMarginalValue(ProbabilisticAllocation probAllocation)
@@ -177,7 +180,7 @@ public class ParametrizedQuasiLinearAgent
 		for(int detAllocation = 0; detAllocation < numberOfDeterministicAllocations; detAllocation++)
 		{
 			double prob = _allocProbDistribution.probability(detAllocation);
-			expectedMarginalValue += prob * ((LinearThresholdValueFunction)(_valueFunction.get(detAllocation))).getMarginalValue();
+			expectedMarginalValue += prob * _valueFunction.get(detAllocation).getMarginalValue();
 		}
 		
 		_logger.debug("Agent " + _id + "; Expected Marginal Value for allocation " + probAllocation.toString() + " is " + expectedMarginalValue);
@@ -215,22 +218,22 @@ public class ParametrizedQuasiLinearAgent
 	private double computeProbabilityOfAllocation(int detAllocation, ProbabilisticAllocation probAllocation)
 	{
 		_logger.debug("computeProbabilityOfAllocation(" + detAllocation + ", " + Arrays.toString( probAllocation.getAllocationProbabilities().toArray() ) + ")");
-		int nGoods = probAllocation.getNumberOfBidders();						// Single-minded bidders
+		int nGoods = probAllocation.getNumberOfBidders();						// Single-minded bidders (bidders==sellers in the reverse auction)
 		double prob = 1;
 		
 		for(int good = 0; good < nGoods; ++good)
 		{
 			//First, check if the good (DB) needs to be allocated under detAllocation
-			int isAllocated = 1;
+			long isAllocated = 1;
 			isAllocated = isAllocated << good;
 			
 			//Then, use the probability of the bundle to be allocated if it is required by detAllocation
 			if( (isAllocated & detAllocation) > 0)
 				prob *= probAllocation.getAllocationProbabilityOfBundle(good);
 			else
-				prob *= (1-probAllocation.getAllocationProbabilityOfBundle(good));
+				prob *= 1-probAllocation.getAllocationProbabilityOfBundle(good);
 		}
-		
+
 		_logger.debug("The resulting prob is " + prob);
 		return prob;
 	}
