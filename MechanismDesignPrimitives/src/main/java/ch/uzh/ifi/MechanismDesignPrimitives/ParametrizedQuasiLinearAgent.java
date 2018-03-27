@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.math3.distribution.AbstractIntegerDistribution;
 import org.apache.commons.math3.distribution.EnumeratedIntegerDistribution;
@@ -20,6 +21,23 @@ public class ParametrizedQuasiLinearAgent
 {
 
 	private static final Logger _logger = LogManager.getLogger(ParametrizedQuasiLinearAgent.class);
+	
+	/**
+	 * A simple constructor.
+	 * @param endowment initial endowment of the agent
+	 * @param allocations an array of binary encoded deterministic allocations of DBs. An element i=0xabc of the array encodes the binary
+	 *        allocation of the 1st DB, a={0,1}, of the second, b={0,1} and of the 3rd one, i.e., c={0,1}
+	 */
+	public ParametrizedQuasiLinearAgent(int id, double endowment, List< LinearThresholdValueFunction> valueFunctions)
+	{
+		_logger.debug("ParametrizedQuasiLinearAgent::ParametrizedQuasiLinearAgent("+id+", "+endowment+", valueFunctions)");
+		
+		_id = id;
+		_valueFunction = valueFunctions;
+		_endowment = endowment;
+	}
+	
+	
 	/**
 	 * A simple constructor.
 	 * @param endowment initial endowment of the agent
@@ -31,9 +49,13 @@ public class ParametrizedQuasiLinearAgent
 		_logger.debug("ParametrizedQuasiLinearAgent::ParametrizedQuasiLinearAgent("+id+", "+endowment+", valueFunctions)");
 		
 		_id = id;
-		_valueFunction = valueFunctions;
+		_valueFunction = new CopyOnWriteArrayList<LinearThresholdValueFunction>();
+		for(int i = 0; i < valueFunctions.size(); ++i)
+			_valueFunction.add(valueFunctions.get(i));
+		
 		_endowment = endowment;
 	}
+	
 	
 	/**
 	 * (non-Javadoc)
@@ -42,9 +64,9 @@ public class ParametrizedQuasiLinearAgent
 	public String toString()
 	{
 		String str = "Agent id=" + _id + ":\n";
-		for(Map.Entry<Integer, LinearThresholdValueFunction> entry: _valueFunction.entrySet())
-			str += entry.getKey() + " v'=" + entry.getValue().getMarginalValue() + " " + 
-					                " xMax =" + entry.getValue().getThreshold() + "\n";
+		//for(Map.Entry<Integer, LinearThresholdValueFunction> entry: _valueFunction.entrySet())
+		//	str += entry.getKey() + " v'=" + entry.getValue().getMarginalValue() + " " + 
+		//			                " xMax =" + entry.getValue().getThreshold() + "\n";
 		return str;
 	}
 	/**
@@ -65,6 +87,7 @@ public class ParametrizedQuasiLinearAgent
 		return _id;
 	}
 	
+	
 	/**
 	 * The method computes (expected) utility of the bundle given current allocation.
 	 * @param allocation probabilistic allocation of different DBs
@@ -73,17 +96,28 @@ public class ParametrizedQuasiLinearAgent
 	 */
 	public double computeUtility( ProbabilisticAllocation allocation, List<Double> bundle )
 	{
-		_logger.debug("-> computeUtility( allocation=" + allocation.toString()+ ", bundle= " + bundle.toString() + ")");
+		//_logger.debug("-> computeUtility( allocation=" + allocation.toString()+ ", bundle= " + bundle.toString() + ")");
+		// Generate probability distribution over deterministic allocations
+		updateAllocProbabilityDistribution(allocation);
+		return computeUtility( bundle );
+	}
+	
+	/**
+	 * The method computes (expected) utility of the bundle given current allocation.
+	 * @param allocation probabilistic allocation of different DBs
+	 * @param bundle bundle of goods (i.e., {x0, x1,...} - quantities)
+	 * @return utility of the agent for the specified bundle under given allocation
+	 */
+	public double computeUtility( List<Double> bundle )
+	{
+		//_logger.debug("-> computeUtility( allocation=" + allocation.toString()+ ", bundle= " + bundle.toString() + ")");
 		double money = bundle.get(0);
 		double goods = bundle.get(1);							//Only one good for now
 		
-		// Generate probability distribution over deterministic allocations
-		updateAllocProbabilityDistribution(allocation);
+		double expectedMarginalValue = computeExpectedMarginalValue();
+		double expectedThreshold = computeExpectedThreshold();
 		
-		double expectedMarginalValue = computeExpectedMarginalValue(allocation);
-		double expectedThreshold = computeExpectedThreshold(allocation);
-		
-		_logger.debug("Expected marginal value: " + expectedMarginalValue + "; Expected threshold: " + expectedThreshold);
+		//_logger.debug("Expected marginal value: " + expectedMarginalValue + "; Expected threshold: " + expectedThreshold);
 		
 		if( goods <= expectedThreshold )
 			return expectedMarginalValue * goods + money;
@@ -131,10 +165,10 @@ public class ParametrizedQuasiLinearAgent
 	 * @return the optimal consumption bundle
 	 * @throws IloException 
 	 */
-	public List<Double> solveConsumptionProblem(List<Double> prices, ProbabilisticAllocation allocation)
+	public List<Double> solveConsumptionProblem(List<Double> prices/*, ProbabilisticAllocation allocation*/)
 	{
 		if( prices.get(0) != 1. ) throw new RuntimeException("Price for money must be equal to 1 (normalization): " + prices.get(0));
-		_logger.debug("solveConsumptionProblem("+ Arrays.toString(prices.toArray()) + ", " + Arrays.toString(allocation.getAllocationProbabilities().toArray()) +  ")");
+		//_logger.debug("solveConsumptionProblem("+ Arrays.toString(prices.toArray()) + ", " + Arrays.toString(allocation.getAllocationProbabilities().toArray()) +  ")");
 		
 		// Optimal bundle
 		List<Double> optBundle = new LinkedList<Double>();
@@ -142,10 +176,10 @@ public class ParametrizedQuasiLinearAgent
 		double optGood1 = 0.;
 		
 		// Compute the expected marginal value and threshold under the probability distribution
-		double expectedMarginalValue = computeExpectedMarginalValue(allocation); 
-		double expectedThreshold = computeExpectedThreshold(allocation); 
-		_logger.debug("Agent: " + _id + ". expectedMarginalValue=" + expectedMarginalValue);
-		_logger.debug("Agent: " + _id + ". expectedThreshold=" + expectedThreshold);
+		double expectedMarginalValue = computeExpectedMarginalValue(/*allocation*/); 
+		double expectedThreshold = computeExpectedThreshold(/*allocation*/); 
+		//_logger.debug("Agent: " + _id + ". expectedMarginalValue=" + expectedMarginalValue);
+		//_logger.debug("Agent: " + _id + ". expectedThreshold=" + expectedThreshold);
 		
 		// If the marginal value is smaller than the price, then don't consume. Otherwise, consume the maximum amount.
 		if( prices.get(1) <= expectedMarginalValue )
@@ -173,9 +207,22 @@ public class ParametrizedQuasiLinearAgent
 	public double computeExpectedMarginalValue(ProbabilisticAllocation probAllocation)
 	{
 		_logger.debug("computeExpectedMarginalValue("+ Arrays.toString(probAllocation.getAllocationProbabilities().toArray())+")");
+		_numberOfGoods = probAllocation.getNumberOfGoods();
 		
+		double expectedMarginalValue = computeExpectedMarginalValue();
+		_logger.debug("Agent " + _id + "; Expected Marginal Value for allocation " + probAllocation.toString() + " is " + expectedMarginalValue);
+		
+		return expectedMarginalValue;
+	}
+	
+	/**
+	 * The method computes expected marginal value corresponding to the specified probabilistic allocation of DBs
+	 * @return expected marginal value
+	 */
+	public double computeExpectedMarginalValue()
+	{
 		double expectedMarginalValue = 0.;
-		int numberOfDeterministicAllocations = (int)Math.pow(2, probAllocation.getNumberOfGoods());
+		int numberOfDeterministicAllocations = (int)Math.pow(2, _numberOfGoods);
 		
 		for(int detAllocation = 0; detAllocation < numberOfDeterministicAllocations; detAllocation++)
 		{
@@ -183,7 +230,6 @@ public class ParametrizedQuasiLinearAgent
 			expectedMarginalValue += prob * _valueFunction.get(detAllocation).getMarginalValue();
 		}
 		
-		_logger.debug("Agent " + _id + "; Expected Marginal Value for allocation " + probAllocation.toString() + " is " + expectedMarginalValue);
 		return expectedMarginalValue;
 	}
 	
@@ -195,17 +241,29 @@ public class ParametrizedQuasiLinearAgent
 	public double computeExpectedThreshold(ProbabilisticAllocation probAllocation)
 	{
 		_logger.debug("computeExpectedThreshold("+ Arrays.toString(probAllocation.getAllocationProbabilities().toArray())+")");
+		_numberOfGoods = probAllocation.getNumberOfGoods();
+		
+		double expectedThreshold = computeExpectedThreshold();
+		_logger.debug("Agent " + _id + "; Expected Threshold for allocation " + probAllocation.toString() + " is " + expectedThreshold);
+		
+		return expectedThreshold;
+	}
+	
+	/**
+	 * The method computes expected threshold corresponding to the specified probabilistic allocation of DBs
+	 * @return expected threshold
+	 */
+	public double computeExpectedThreshold()
+	{
 		double expectedThreshold = 0.;
 		
-		int numberOfDeterministicAllocations = (int)Math.pow(2, probAllocation.getNumberOfGoods());
-		
+		int numberOfDeterministicAllocations = (int)Math.pow(2, _numberOfGoods);
 		for(int detAllocation = 0; detAllocation < numberOfDeterministicAllocations; detAllocation++)
 		{
 			double prob = _allocProbDistribution.probability(detAllocation);
-			expectedThreshold += prob * ((LinearThresholdValueFunction)(_valueFunction.get(detAllocation))).getThreshold();
+			expectedThreshold += prob * _valueFunction.get(detAllocation).getThreshold();
 		}
 		
-		_logger.debug("Agent " + _id + "; Expected Threshold for allocation " + probAllocation.toString() + " is " + expectedThreshold);
 		return expectedThreshold;
 	}
 	
@@ -238,9 +296,15 @@ public class ParametrizedQuasiLinearAgent
 		return prob;
 	}
 	
+	public void setNumberOfGoods(int nGoods)
+	{
+		_numberOfGoods = nGoods;
+	}
+	
 	private int _id;													// Agent id
 	private double _endowment;											// Initial endowment of the consumer with money
-	private Map<Integer, LinearThresholdValueFunction> _valueFunction;	// Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
+	private int _numberOfGoods;
+	private List<LinearThresholdValueFunction> _valueFunction;	// Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
 	private double _arrowPrattIdx;										// Risk-aversion measure	
 	private AbstractIntegerDistribution _allocProbDistribution;			// Probability distribution over deterministic allocations
 }
