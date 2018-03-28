@@ -165,7 +165,7 @@ public class ParametrizedQuasiLinearAgent
 	 * @return the optimal consumption bundle
 	 * @throws IloException 
 	 */
-	public List<Double> solveConsumptionProblem(List<Double> prices/*, ProbabilisticAllocation allocation*/)
+	public List<Double> solveConsumptionProblem(List<Double> prices)
 	{
 		if( prices.get(0) != 1. ) throw new RuntimeException("Price for money must be equal to 1 (normalization): " + prices.get(0));
 		//_logger.debug("solveConsumptionProblem("+ Arrays.toString(prices.toArray()) + ", " + Arrays.toString(allocation.getAllocationProbabilities().toArray()) +  ")");
@@ -176,8 +176,8 @@ public class ParametrizedQuasiLinearAgent
 		double optGood1 = 0.;
 		
 		// Compute the expected marginal value and threshold under the probability distribution
-		double expectedMarginalValue = computeExpectedMarginalValue(/*allocation*/); 
-		double expectedThreshold = computeExpectedThreshold(/*allocation*/); 
+		double expectedMarginalValue = computeExpectedMarginalValue(); 
+		double expectedThreshold = computeExpectedThreshold(); 
 		//_logger.debug("Agent: " + _id + ". expectedMarginalValue=" + expectedMarginalValue);
 		//_logger.debug("Agent: " + _id + ". expectedThreshold=" + expectedThreshold);
 		
