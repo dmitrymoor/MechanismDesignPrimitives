@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The class implements a model of an agent with quasi-linear utility parameterized by the "Allocation" object (see AAMAS paper).
+ * The class implements a model of an agent with a quasi-linear utility function parameterized by the "Allocation" object (see AAMAS paper).
  * @author Dmitry Moor
  *
  */
