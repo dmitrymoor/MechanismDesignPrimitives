@@ -1,6 +1,5 @@
 package ch.uzh.ifi.MechanismDesignPrimitives;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -135,7 +134,7 @@ public class ParametrizedQuasiLinearAgent
 		int[] detAllocations = new int[numberOfDeterministicAllocations]; 
 		double[] probabilities = new double[numberOfDeterministicAllocations];
 
-		for(int i = 0; i < numberOfDeterministicAllocations; i++)
+		/*for(int i = 0; i < numberOfDeterministicAllocations; i++)
 		{
 			detAllocations[i] = i;
 			probabilities[i] = computeProbabilityOfAllocation(detAllocations[i], probAllocation);
@@ -143,9 +142,29 @@ public class ParametrizedQuasiLinearAgent
 			if( probabilities[i] < 0. && probabilities[i] > -1e-6 )
 				probabilities[i] = 0.;
 			else if ( probabilities[i] < 0. ) throw new RuntimeException("Negative prob: " + probabilities[i]);
+		}*/
+				
+		try
+		{
+			List<Thread> threads = new LinkedList<Thread>();
+			for(int i = 0; i < _numberOfThreads; ++i)
+			{
+				Thread thread = new Thread(new UpdateWorker("Thread", i, numberOfDeterministicAllocations, probAllocation, probabilities, detAllocations) );
+				threads.add(thread);
+			}
+			
+			for(int i = 0; i < _numberOfThreads; ++i)
+				threads.get(i).start();
+			
+			for(int i = 0; i < _numberOfThreads; ++i)
+				threads.get(i).join(0);
 		}
+		catch(InterruptedException e)
+		{
+		    e.printStackTrace();
+		}
+
 		_allocProbDistribution = new EnumeratedIntegerDistribution(detAllocations, probabilities);
-		
 	}
 	
 	public AbstractIntegerDistribution getAllocProbabilityDistribution()
@@ -275,7 +294,7 @@ public class ParametrizedQuasiLinearAgent
 	 */
 	private double computeProbabilityOfAllocation(int detAllocation, ProbabilisticAllocation probAllocation)
 	{
-		_logger.debug("computeProbabilityOfAllocation(" + detAllocation + ", " + Arrays.toString( probAllocation.getAllocationProbabilities().toArray() ) + ")");
+		//_logger.debug("computeProbabilityOfAllocation(" + detAllocation + ", " + Arrays.toString( probAllocation.getAllocationProbabilities().toArray() ) + ")");
 		int nGoods = probAllocation.getNumberOfBidders();						// Single-minded bidders (bidders==sellers in the reverse auction)
 		double prob = 1;
 		
@@ -301,10 +320,61 @@ public class ParametrizedQuasiLinearAgent
 		_numberOfGoods = nGoods;
 	}
 	
+	private class UpdateWorker implements Runnable
+	{
+		private Thread _thread;										//A thread object
+		private String _threadName;									//The thread's name
+		private int _threadId;										//A thread id
+		private ProbabilisticAllocation _alloc;
+		private double _price;
+		private int _nDeterministicAllocations;
+		private int _idxLow;
+		private int _idxHigh;
+		private double[] _probabilities;
+		private int[] _detAllocations;
+		
+		public UpdateWorker(String name, int threadId, int nDeterministicAllocations, ProbabilisticAllocation allocation, double[] probabilities, int[] detAlloc)
+		{
+			_threadName = name + threadId;
+			_threadId = threadId;
+			_alloc = allocation;
+			_nDeterministicAllocations = nDeterministicAllocations;
+			_probabilities = probabilities;
+			_detAllocations = detAlloc;
+			
+			_idxLow = _threadId * _nDeterministicAllocations / _numberOfThreads;
+			_idxHigh = (_threadId + 1) * _nDeterministicAllocations / _numberOfThreads - 1;
+		}
+		
+		@Override
+		public void run() 
+		{							
+			for( int i = _idxLow; i <= _idxHigh; ++i )
+			{
+				_detAllocations[i] = i;
+				_probabilities[i] = computeProbabilityOfAllocation(_detAllocations[i], _alloc);
+
+				if( _probabilities[i] < 0. && _probabilities[i] > -1e-6 )
+					_probabilities[i] = 0.;
+				else if ( _probabilities[i] < 0. ) throw new RuntimeException("Negative prob: " + _probabilities[i]);
+			}			
+		}
+		
+		public void start()
+		{
+			if(_thread == null)
+			{
+				_thread = new Thread(this, _threadName);
+				_thread.start();
+			}
+		}
+	}
+	
 	private int _id;													// Agent id
 	private double _endowment;											// Initial endowment of the consumer with money
 	private int _numberOfGoods;
 	private List<LinearThresholdValueFunction> _valueFunction;	// Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
 	private double _arrowPrattIdx;										// Risk-aversion measure	
 	private AbstractIntegerDistribution _allocProbDistribution;			// Probability distribution over deterministic allocations
+	private int _numberOfThreads = 1;
 }
