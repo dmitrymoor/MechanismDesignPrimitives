@@ -3,6 +3,7 @@ package ch.uzh.ifi.MechanismDesignPrimitives;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
 
 /**
@@ -19,7 +20,7 @@ public class Allocation
 	{
 		_allocatedAuctioneersIds = new ArrayList<Integer>();
 		_allocatedBiddersIds =new ArrayList<List<Integer> >();
-		_allocatedBundles = new ArrayList<List<Integer> >();
+		_allocatedBundles = new CopyOnWriteArrayList<List<Integer> >();
 		_allocatedAuctioneersValues = new ArrayList<Double>();
 		_allocatedBiddersValues = new ArrayList< List<Double> >();
 	}
