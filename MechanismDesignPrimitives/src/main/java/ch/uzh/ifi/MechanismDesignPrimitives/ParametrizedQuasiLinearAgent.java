@@ -68,6 +68,7 @@ public class ParametrizedQuasiLinearAgent
 		//			                " xMax =" + entry.getValue().getThreshold() + "\n";
 		return str;
 	}
+	
 	/**
 	 * The method returns the endowment of the agent.
 	 * @return the endowment of the agent
@@ -86,7 +87,6 @@ public class ParametrizedQuasiLinearAgent
 		return _id;
 	}
 	
-	
 	/**
 	 * The method computes (expected) utility of the bundle given current allocation.
 	 * @param allocation probabilistic allocation of different DBs
@@ -95,8 +95,6 @@ public class ParametrizedQuasiLinearAgent
 	 */
 	public double computeUtility( ProbabilisticAllocation allocation, List<Double> bundle )
 	{
-		//_logger.debug("-> computeUtility( allocation=" + allocation.toString()+ ", bundle= " + bundle.toString() + ")");
-		// Generate probability distribution over deterministic allocations
 		updateAllocProbabilityDistribution(allocation);
 		return computeUtility( bundle );
 	}
