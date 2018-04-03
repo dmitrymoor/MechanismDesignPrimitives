@@ -109,7 +109,6 @@ public class ParametrizedQuasiLinearAgent
 	 */
 	public double computeUtility( List<Double> bundle )
 	{
-		//_logger.debug("-> computeUtility( allocation=" + allocation.toString()+ ", bundle= " + bundle.toString() + ")");
 		double money = bundle.get(0);
 		double goods = bundle.get(1);							//Only one good for now
 		
@@ -130,23 +129,13 @@ public class ParametrizedQuasiLinearAgent
 		double[] probabilities = new double[numberOfDeterministicAllocations];
 		double[] vals = new double[numberOfDeterministicAllocations];
 		double[] threshold = new double[numberOfDeterministicAllocations];
-
-		/*for(int i = 0; i < numberOfDeterministicAllocations; i++)
-		{
-			detAllocations[i] = i;
-			probabilities[i] = computeProbabilityOfAllocation(detAllocations[i], probAllocation);
-
-			if( probabilities[i] < 0. && probabilities[i] > -1e-6 )
-				probabilities[i] = 0.;
-			else if ( probabilities[i] < 0. ) throw new RuntimeException("Negative prob: " + probabilities[i]);
-		}*/
 				
 		try
 		{
 			List<Thread> threads = new LinkedList<Thread>();
 			for(int i = 0; i < _numberOfThreads; ++i)
 			{
-				Thread thread = new Thread(new UpdateWorker("Thread", i, numberOfDeterministicAllocations, probAllocation, probabilities, detAllocations,
+				Thread thread = new Thread(new DistributionUpdateWorker("Thread", i, numberOfDeterministicAllocations, probAllocation, probabilities, detAllocations,
 						                                    vals, threshold) );
 				threads.add(thread);
 			}
@@ -191,7 +180,7 @@ public class ParametrizedQuasiLinearAgent
 			List<Thread> threads = new LinkedList<Thread>();
 			for(int i = 0; i < _numberOfThreads; ++i)
 			{
-				Thread thread = new Thread(new UpdateWorker1("Thread", i, numberOfDeterministicAllocations, vals, threshold) );
+				Thread thread = new Thread(new ExpectationsUpdateWorker("Thread", i, numberOfDeterministicAllocations, vals, threshold) );
 				threads.add(thread);
 			}
 			
@@ -232,10 +221,6 @@ public class ParametrizedQuasiLinearAgent
 		List<Double> optBundle = new LinkedList<Double>();
 		double optGood0 = 0.;
 		double optGood1 = 0.;
-		
-		// Compute the expected marginal value and threshold under the probability distribution
-		//double expectedMarginalValue = computeExpectedMarginalValue(); 
-		//double expectedThreshold = computeExpectedThreshold(); 
 		
 		// If the marginal value is smaller than the price, then don't consume. Otherwise, consume the maximum amount.
 		if( prices.get(1) <= _expectedMarginalValue )
@@ -360,21 +345,26 @@ public class ParametrizedQuasiLinearAgent
 		_numberOfGoods = nGoods;
 	}
 	
-	private class UpdateWorker implements Runnable
+	/**
+	 * The class implements a thread worker that recomputes the probability distribution over deterministic allocations.
+	 * @author Dmitry Moor
+	 *
+	 */
+	private class DistributionUpdateWorker implements Runnable
 	{
-		private Thread _thread;										//A thread object
-		private String _threadName;									//The thread's name
-		private int _threadId;										//A thread id
+		private Thread _thread;										// A thread object
+		private String _threadName;									// The thread's name
+		private int _threadId;										// A thread id
 		private ProbabilisticAllocation _alloc;
-		private int _nDeterministicAllocations;
-		private int _idxLow;
-		private int _idxHigh;
-		private double[] _probabilities;
-		private int[] _detAllocations;
+		private int _nDeterministicAllocations;						// Number of deterministic allocations
+		private int _idxLow;										// Lower bound of the thread index range
+		private int _idxHigh;										// Upper bound of the thread index range
+		private double[] _probabilities;							// Probabilities of deterministic allocations
+		private int[] _detAllocations;								// Deterministic allocations in binary form
 		private double[] _vals;
 		private double[] _threshold;
 		
-		public UpdateWorker(String name, int threadId, int nDeterministicAllocations, ProbabilisticAllocation allocation, double[] probabilities, 
+		public DistributionUpdateWorker(String name, int threadId, int nDeterministicAllocations, ProbabilisticAllocation allocation, double[] probabilities, 
 				            int[] detAlloc, double[] vals, double[] threshold)
 		{
 			_threadName = name + threadId;
@@ -418,18 +408,22 @@ public class ParametrizedQuasiLinearAgent
 		}
 	}
 	
-	private class UpdateWorker1 implements Runnable
+	/**
+	 * The class implements a thread worker that recomputes the expected marginal value and the threshold over deterministic allocations.
+	 * @author Dmitry Moor
+	 */
+	private class ExpectationsUpdateWorker implements Runnable
 	{
-		private Thread _thread;										//A thread object
-		private String _threadName;									//The thread's name
-		private int _threadId;										//A thread id
-		private int _nDeterministicAllocations;
-		private int _idxLow;
-		private int _idxHigh;
-		private double[] _vals;
-		private double[] _threshold;
+		private Thread _thread;										// A thread object
+		private String _threadName;									// The thread's name
+		private int _threadId;										// A thread id
+		private int _nDeterministicAllocations;						// Number of deterministic allocations
+		private int _idxLow;										// Lower bound of the thread index range
+		private int _idxHigh;										// Upper bound of the thread index range
+		private double[] _vals;										// Each element of the array corresponds to the contribution of the deterministic allocation .... 
+		private double[] _threshold;								// ... into the expected marginal value or threshold respectively.
 		
-		public UpdateWorker1(String name, int threadId, int nDeterministicAllocations, double[] vals, double[] threshold)
+		public ExpectationsUpdateWorker(String name, int threadId, int nDeterministicAllocations, double[] vals, double[] threshold)
 		{
 			_threadName = name + threadId;
 			_threadId = threadId;
@@ -460,13 +454,14 @@ public class ParametrizedQuasiLinearAgent
 			}
 		}
 	}
-	private int _id;													// Agent id
-	private double _endowment;											// Initial endowment of the consumer with money
-	private int _numberOfGoods;
-	private List<LinearThresholdValueFunction> _valueFunction;	// Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
-	private double _arrowPrattIdx;										// Risk-aversion measure	
-	private AbstractIntegerDistribution _allocProbDistribution;			// Probability distribution over deterministic allocations
-	private double _expectedMarginalValue;
-	private double _expectedThreshold;
-	private int _numberOfThreads = 2;
+	
+	private int _id;												// Agent id
+	private double _endowment;										// Initial endowment of the consumer with money
+	private int _numberOfGoods;										// Number of goods
+	private List<LinearThresholdValueFunction> _valueFunction;		// Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
+	private double _arrowPrattIdx;									// Risk-aversion measure	
+	private AbstractIntegerDistribution _allocProbDistribution;		// Probability distribution over deterministic allocations
+	private double _expectedMarginalValue;							// Expected marginal value over deterministic allocation
+	private double _expectedThreshold;								// Expected threshold over deterministic allocation
+	private int _numberOfThreads = 2;								// Number of threads
 }
