@@ -372,6 +372,11 @@ public class ParametrizedQuasiLinearAgent
 		}
 	}
 	
+	public void setNumberOfThreads(int numberOfThreads)
+	{
+		_numberOfThreads = numberOfThreads;
+	}
+	
 	private int _id;												// Agent id
 	private double _endowment;										// Initial endowment of the consumer with money
 	private int _numberOfGoods;										// Number of goods
@@ -380,5 +385,5 @@ public class ParametrizedQuasiLinearAgent
 	private AbstractIntegerDistribution _allocProbDistribution;		// Probability distribution over deterministic allocations
 	private double _expectedMarginalValue;							// Expected marginal value over deterministic allocation
 	private double _expectedThreshold;								// Expected threshold over deterministic allocation
-	private int _numberOfThreads = 1;								// Number of threads
+	private int _numberOfThreads = 4;								// Number of threads
 }
