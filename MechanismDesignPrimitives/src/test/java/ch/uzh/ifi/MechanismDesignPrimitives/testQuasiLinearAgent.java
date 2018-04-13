@@ -309,14 +309,14 @@ public class testQuasiLinearAgent {
 		agent.updateAllocProbabilityDistribution(allocation1);
 		prices.add( agent.computeExpectedMarginalValue(allocation1)-1e-6);
 		
-		List<Double> consumptionBundle = agent.solveConsumptionProblem(prices/*, allocation1*/);
+		List<Double> consumptionBundle = agent.solveConsumptionProblem(prices.get(1)/*, allocation1*/);
 		assertTrue( Math.abs(consumptionBundle.get(1) - agent.computeExpectedThreshold(allocation1)) < 1e-6);
 		
 		prices = new LinkedList<Double>();
 		prices.add(1.0);
 		prices.add( agent.computeExpectedMarginalValue(allocation1)+1e-6);
 		
-		consumptionBundle = agent.solveConsumptionProblem(prices/*, allocation1*/);
+		consumptionBundle = agent.solveConsumptionProblem(prices.get(1)/*, allocation1*/);
 		assertTrue( Math.abs(consumptionBundle.get(1) - 0) < 1e-6);
 	}
 	
@@ -382,14 +382,14 @@ public class testQuasiLinearAgent {
 		agent.updateAllocProbabilityDistribution(allocation1);
 		prices.add( agent.computeExpectedMarginalValue(allocation1)-1e-6);
 		
-		List<Double> consumptionBundle = agent.solveConsumptionProblem(prices/*, allocation1*/);
+		List<Double> consumptionBundle = agent.solveConsumptionProblem(prices.get(1)/*, allocation1*/);
 		assertTrue( Math.abs(consumptionBundle.get(1) - agent.getEndowment() / prices.get(1)) < 1e-6);
 		
 		prices = new LinkedList<Double>();
 		prices.add(1.0);
 		prices.add( agent.computeExpectedMarginalValue(allocation1)+1e-6);
 		
-		consumptionBundle = agent.solveConsumptionProblem(prices/*, allocation1*/);
+		consumptionBundle = agent.solveConsumptionProblem(prices.get(1)/*, allocation1*/);
 		assertTrue( Math.abs(consumptionBundle.get(1) - 0) < 1e-6);
 	}
 	
@@ -449,14 +449,14 @@ public class testQuasiLinearAgent {
 		prices.add(1.0);
 		prices.add( agent.computeExpectedMarginalValue(allocation1)-1e-6);
 		
-		List<Double> consumptionBundle = agent.solveConsumptionProblem(prices/*, allocation1*/);
+		List<Double> consumptionBundle = agent.solveConsumptionProblem(prices.get(1)/*, allocation1*/);
 		assertTrue( Math.abs(consumptionBundle.get(1) - agent.computeExpectedThreshold(allocation1)) < 1e-6);
 		
 		prices = new LinkedList<Double>();
 		prices.add(1.0);
 		prices.add( agent.computeExpectedMarginalValue(allocation1)+1e-6);
 		
-		consumptionBundle = agent.solveConsumptionProblem(prices/*, allocation1*/);
+		consumptionBundle = agent.solveConsumptionProblem(prices.get(1)/*, allocation1*/);
 		assertTrue( Math.abs(consumptionBundle.get(1) - 0) < 1e-6);
 	}
 }
