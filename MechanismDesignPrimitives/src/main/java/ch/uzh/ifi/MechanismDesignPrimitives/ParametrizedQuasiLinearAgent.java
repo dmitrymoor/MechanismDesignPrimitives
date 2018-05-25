@@ -297,7 +297,7 @@ public class ParametrizedQuasiLinearAgent
 				prob *= 1-probAllocation.getAllocationProbabilityOfBundle(good);
 		}
 		
-		if( prob < -1e-10) throw new RuntimeException("Negative probability: " + prob + " of det. allocation " + detAllocation);
+		if( prob < -1e-6) throw new RuntimeException("Negative probability: " + prob + " of det. allocation " + detAllocation);
 		else if (prob < 0) prob = 0.;
 
 		_logger.debug("The resulting prob of det. alloc " + detAllocation + " is " + prob);
