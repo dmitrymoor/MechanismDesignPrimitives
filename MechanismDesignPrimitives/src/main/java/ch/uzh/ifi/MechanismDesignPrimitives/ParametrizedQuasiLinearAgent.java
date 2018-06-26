@@ -201,6 +201,7 @@ public class ParametrizedQuasiLinearAgent
 		
 		optBundle.add(optGood0);
 		optBundle.add(optGood1);
+		_logger.debug("Agent: " + _id + ". Given price " + price + " my demand: " + optBundle.get(0) + ", " + optBundle.get(1));
 		return optBundle;
 	}
 	
@@ -233,6 +234,7 @@ public class ParametrizedQuasiLinearAgent
 		{
 			double prob = _allocProbDistribution.probability(detAllocation);
 			expectedMarginalValue += prob * _valueFunction.get(detAllocation).getMarginalValue();
+			//_logger.debug("Agent " + _id + ": updating v' += " + prob + " * " + _valueFunction.get(detAllocation).getMarginalValue());
 		}
 		
 		return expectedMarginalValue;

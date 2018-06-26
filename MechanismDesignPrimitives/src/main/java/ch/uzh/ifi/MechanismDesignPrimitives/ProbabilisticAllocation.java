@@ -30,7 +30,7 @@ public class ProbabilisticAllocation extends Allocation
 	 * @param allocationProbabilities allocation probabilities of the goods
 	 * @throws Exception if the allocated bundle set is empty
 	 */
-	public void addAllocatedAgent(int auctioneerId, List<Integer> bidders, List<Integer> itsBundle, 
+	public void addAllocatedAuctioneer(int auctioneerId, List<Integer> bidders, List<Integer> itsBundle, 
             					  List<Double> allocationProbabilities) throws Exception
 	{
 		if( itsBundle.size() == 0 ) throw new Exception("The agent has to be interested in at least one bundle.");
