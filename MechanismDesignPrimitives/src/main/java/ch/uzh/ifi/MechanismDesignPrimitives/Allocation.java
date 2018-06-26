@@ -26,7 +26,7 @@ public class Allocation
 	}
 	
 	/**
-	 * The method adds a new agents in the list of allocated agents (buyers in a reverse auction).
+	 * The method adds new agents in the list of allocated agents (buyers in a reverse auction).
 	 * @param auctioneerId an ID of an allocated agent (buyer)
 	 * @param bidders a list of bidders allocated for the given auctioneer
 	 * @param itsAllocatedBundles a list of bundles allocated for this auctioneer
@@ -36,9 +36,7 @@ public class Allocation
 	 */
 	public void addAllocatedAgent(int auctioneerId, List<Integer> bidders, List<Integer> itsAllocatedBundles, 
 			                      double autioneerValue, List<Double> biddersValues) throws Exception
-	{
-		if( itsAllocatedBundles.size() == 0 ) throw new Exception("The agent have to be allocated at least one bundle.");
-		
+	{		
 		_allocatedAuctioneersIds.add( auctioneerId );
 		_allocatedBiddersIds.add( bidders );
 		_allocatedBundles.add(itsAllocatedBundles);
@@ -63,7 +61,7 @@ public class Allocation
 	}
 	
 	/**
-	 * The method returns the total allocated welfare of allocated plans.
+	 * The method returns the total allocated welfare of allocated plans in the forward auction.
 	 * @return the total welfare
 	 */
 	public double getAllocatedWelfare()
@@ -132,13 +130,13 @@ public class Allocation
 	}
 	
 	/**
-	 * The method returns the allocated value of a buyer for his trades
-	 * @param buyerIdx - an index of a buyer 
-	 * @return the total value of a buyer for his trade
+	 * The method returns the allocated value of the auctioneer for his trades
+	 * @param auctioneerIdx - an index of the auctioneer 
+	 * @return the total value of the auctioneer for his/her trade
 	 */
-	public double getAuctioneersAllocatedValue(int buyerIdx)
+	public double getAuctioneersAllocatedValue(int auctioneerIdx)
 	{
-		return _allocatedAuctioneersValues.get(buyerIdx);
+		return _allocatedAuctioneersValues.get(auctioneerIdx);
 	}
 	
 	/**
