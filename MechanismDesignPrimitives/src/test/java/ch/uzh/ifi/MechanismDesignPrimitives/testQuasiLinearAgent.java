@@ -85,12 +85,12 @@ public class testQuasiLinearAgent {
 		allocationProbabilities6.add(0.);
 		allocationProbabilities6.add(0.);
 		
-		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities1);
-		allocation2.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities2);
-		allocation3.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities3);
-		allocation4.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities4);
-		allocation5.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities5);
-		allocation6.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities6);
+		allocation1.addAllocatedAuctioneer(auctioneerId, bidders, bundles,  allocationProbabilities1);
+		allocation2.addAllocatedAuctioneer(auctioneerId, bidders, bundles,  allocationProbabilities2);
+		allocation3.addAllocatedAuctioneer(auctioneerId, bidders, bundles,  allocationProbabilities3);
+		allocation4.addAllocatedAuctioneer(auctioneerId, bidders, bundles,  allocationProbabilities4);
+		allocation5.addAllocatedAuctioneer(auctioneerId, bidders, bundles,  allocationProbabilities5);
+		allocation6.addAllocatedAuctioneer(auctioneerId, bidders, bundles,  allocationProbabilities6);
 		
 		//Describe buyer
 		double endowment = 1;
@@ -152,7 +152,7 @@ public class testQuasiLinearAgent {
 		allocationProbabilities1.add(1.0);
 		
 		
-		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, allocationProbabilities1);
+		allocation1.addAllocatedAuctioneer(auctioneerId, bidders, bundles, allocationProbabilities1);
 		
 		//Describe buyer
 		double endowment = 1;
@@ -211,7 +211,7 @@ public class testQuasiLinearAgent {
 		allocationProbabilities1.add(0.5);
 		
 		
-		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, allocationProbabilities1);
+		allocation1.addAllocatedAuctioneer(auctioneerId, bidders, bundles, allocationProbabilities1);
 		
 		//Describe buyer
 		double endowment = 1;
@@ -274,7 +274,7 @@ public class testQuasiLinearAgent {
 		allocationProbabilities1.add(1.0);
 		
 		
-		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, allocationProbabilities1);
+		allocation1.addAllocatedAuctioneer(auctioneerId, bidders, bundles, allocationProbabilities1);
 		
 		//Describe buyer
 		double endowment = 100;
@@ -347,7 +347,7 @@ public class testQuasiLinearAgent {
 		allocationProbabilities1.add(1.0);
 		
 		
-		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, allocationProbabilities1);
+		allocation1.addAllocatedAuctioneer(auctioneerId, bidders, bundles, allocationProbabilities1);
 		
 		//Describe buyer
 		double endowment = 1;
@@ -416,7 +416,7 @@ public class testQuasiLinearAgent {
 		allocationProbabilities1.add(1.0);
 		
 		
-		allocation1.addAllocatedAgent(auctioneerId, bidders, bundles, allocationProbabilities1);
+		allocation1.addAllocatedAuctioneer(auctioneerId, bidders, bundles, allocationProbabilities1);
 		
 		//Describe buyer
 		double endowment = 100;

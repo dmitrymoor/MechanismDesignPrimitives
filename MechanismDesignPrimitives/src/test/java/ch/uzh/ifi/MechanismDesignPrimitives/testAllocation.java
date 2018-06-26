@@ -65,7 +65,7 @@ public class testAllocation {
 		
 		try
 		{
-			allocation.addAllocatedAgent(auctioneerId, bidders, bundles, allocationProbabilities);
+			allocation.addAllocatedAuctioneer(auctioneerId, bidders, bundles, allocationProbabilities);
 			assertTrue(allocation.getAuctioneerId(0) == 0);
 			assertTrue(allocation.getAllocationProbabilityOfBidderById(1) == 0.3);
 			assertTrue(allocation.getAllocationProbabilityOfBidderById(2) == 0.7);
@@ -106,7 +106,7 @@ public class testAllocation {
 		
 		try
 		{
-			allocation.addAllocatedAgent(auctioneerId, bidders, bundles,  allocationProbabilities);
+			allocation.addAllocatedAuctioneer(auctioneerId, bidders, bundles,  allocationProbabilities);
 			assertTrue(allocation.getAuctioneerId(0) == 0);
 			assertTrue(allocation.getAllocationProbabilityOfBidderById(1) == 0.3);
 			assertTrue(allocation.getAllocationProbabilityOfBidderById(2) == 1.0);
