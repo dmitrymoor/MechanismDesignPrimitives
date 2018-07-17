@@ -159,6 +159,23 @@ public class ParametrizedQuasiLinearAgent
 		_logger.debug("Updated expected marginal value of buyer " + _id + " is: " + _expectedMarginalValue + "(=" +computeExpectedMarginalValue() +"); expected threshold: " + _expectedThreshold + "(="+ computeExpectedThreshold() + ")");
 	}
 	
+	/**
+	 * The method updates the probability distribution over deterministic allocations.
+	 * @param probAllocation probabilistic allocation
+	 */
+	public void updateAllocProbabilityDistribution(int detAlloc, int numberOfGoods)
+	{
+		int numberOfDeterministicAllocations = (int)Math.pow(2, numberOfGoods);
+		int[] detAllocations = new int[numberOfDeterministicAllocations]; 
+		double[] probabilities = new double[numberOfDeterministicAllocations];
+		
+		probabilities[detAlloc] = 1.;
+		_expectedMarginalValue = probabilities[detAlloc] * _valueFunction.get(detAlloc).getMarginalValue();
+		_expectedThreshold = probabilities[detAlloc] * _valueFunction.get(detAlloc).getThreshold();
+		_allocProbDistribution = new EnumeratedIntegerDistribution(detAllocations, probabilities);
+		_logger.debug("Updated expected marginal value of buyer " + _id + " is: " + _expectedMarginalValue + "(=" +computeExpectedMarginalValue() +"); expected threshold: " + _expectedThreshold + "(="+ computeExpectedThreshold() + ")");
+	}
+	
 	public AbstractIntegerDistribution getAllocProbabilityDistribution()
 	{
 		return _allocProbDistribution;

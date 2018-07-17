@@ -82,10 +82,13 @@ public class ProbabilisticAllocation extends Allocation
 	public double getAllocationProbabilityOfBundle(int bundleId)
 	{
 		double allocationProbabilityOfBundle = 0.;
+		double probNotAllocated = 1.;
 		for(int i = 0; i < _allocatedBundles.get(0).size(); ++i)
 			if( _allocatedBundles.get(0).get(i) == bundleId )
-				allocationProbabilityOfBundle += _allocationProbabilities.get(i); 
+				probNotAllocated *= 1. - _allocationProbabilities.get(i);
+				//allocationProbabilityOfBundle += _allocationProbabilities.get(i); 
 		
+		allocationProbabilityOfBundle = 1. - probNotAllocated;
 		if(allocationProbabilityOfBundle > 1. + 1e-6)
 			throw new RuntimeException("Probability is > 1 : " + allocationProbabilityOfBundle);
 		

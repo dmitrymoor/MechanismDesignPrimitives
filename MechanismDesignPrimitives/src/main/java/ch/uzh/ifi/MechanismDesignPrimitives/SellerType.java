@@ -216,9 +216,10 @@ public class SellerType implements Type
 	public double computeInverseVirtualCost(double virtualCost)
 	{
 		double cost = 0.;
+		double lowerBound = _mean - Math.sqrt(3.*_var);
 		
 		if(_distribution == Distribution.UNIFORM)
-			cost = virtualCost / 2.;
+			cost = (virtualCost + lowerBound) / 2.;
 		else throw new RuntimeException("Not defined.");
 		
 		return cost;
