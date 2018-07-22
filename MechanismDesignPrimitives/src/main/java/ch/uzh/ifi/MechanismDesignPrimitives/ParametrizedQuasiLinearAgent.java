@@ -91,9 +91,10 @@ public class ParametrizedQuasiLinearAgent
 	 * @param bundle bundle of goods (i.e., {x0, x1,...} - quantities)
 	 * @return utility of the agent for the specified bundle under given allocation
 	 */
-	public double computeUtility( ProbabilisticAllocation allocation, List<Double> bundle )
+	public double computeUtility( int detAlloc, int numberOfGoods, List<Double> bundle )
 	{
-		updateAllocProbabilityDistribution(allocation);
+		//updateAllocProbabilityDistribution(allocation);
+		updateAllocProbabilityDistribution(detAlloc, numberOfGoods);
 		return computeUtility( bundle );
 	}
 	
