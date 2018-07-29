@@ -119,7 +119,7 @@ public class ParametrizedQuasiLinearAgent
 	 * The method updates the probability distribution over deterministic allocations.
 	 * @param probAllocation probabilistic allocation
 	 */
-	public void updateAllocProbabilityDistribution(ProbabilisticAllocation probAllocation)
+	/*public void updateAllocProbabilityDistribution(ProbabilisticAllocation probAllocation)
 	{
 		int numberOfDeterministicAllocations = (int)Math.pow(2, probAllocation.getNumberOfGoods());
 		int[] detAllocations = new int[numberOfDeterministicAllocations]; 
@@ -158,7 +158,7 @@ public class ParametrizedQuasiLinearAgent
 		
 		_allocProbDistribution = new EnumeratedIntegerDistribution(detAllocations, probabilities);
 		_logger.debug("Updated expected marginal value of buyer " + _id + " is: " + _expectedMarginalValue + "(=" +computeExpectedMarginalValue() +"); expected threshold: " + _expectedThreshold + "(="+ computeExpectedThreshold() + ")");
-	}
+	}*/
 	
 	/**
 	 * The method updates the probability distribution over deterministic allocations.
@@ -166,29 +166,30 @@ public class ParametrizedQuasiLinearAgent
 	 */
 	public void updateAllocProbabilityDistribution(int detAlloc, int numberOfGoods)
 	{
-		int numberOfDeterministicAllocations = (int)Math.pow(2, numberOfGoods);
-		int[] detAllocations = new int[numberOfDeterministicAllocations]; 
-		double[] probabilities = new double[numberOfDeterministicAllocations];
+		//int numberOfDeterministicAllocations = (int)Math.pow(2, numberOfGoods);
+		//int[] detAllocations = new int[numberOfDeterministicAllocations]; 
+		//double[] probabilities = new double[numberOfDeterministicAllocations];
 		
-		probabilities[detAlloc] = 1.;
-		_expectedMarginalValue = probabilities[detAlloc] * _valueFunction.get(detAlloc).getMarginalValue();
-		_expectedThreshold = probabilities[detAlloc] * _valueFunction.get(detAlloc).getThreshold();
-		_allocProbDistribution = new EnumeratedIntegerDistribution(detAllocations, probabilities);
+		//probabilities[detAlloc] = 1.;
+		_expectedMarginalValue = /*probabilities[detAlloc] */ _valueFunction.get(detAlloc).getMarginalValue();
+		_expectedThreshold = /*probabilities[detAlloc] */ _valueFunction.get(detAlloc).getThreshold();
+		//_allocProbDistribution = new EnumeratedIntegerDistribution(detAllocations, probabilities);
+		_detAlloc = detAlloc;
 		_logger.debug("Updated expected marginal value of buyer " + _id + " is: " + _expectedMarginalValue + "(=" +computeExpectedMarginalValue() +"); expected threshold: " + _expectedThreshold + "(="+ computeExpectedThreshold() + ")");
 	}
 	
-	public AbstractIntegerDistribution getAllocProbabilityDistribution()
+/*	public AbstractIntegerDistribution getAllocProbabilityDistribution()
 	{
 		return _allocProbDistribution;
-	}
+	}*/
 	
-	public void setAllocProbabilityDistribution(AbstractIntegerDistribution allocProbDistribution)
+/*	public void setAllocProbabilityDistribution(AbstractIntegerDistribution allocProbDistribution)
 	{
 		_allocProbDistribution = allocProbDistribution;
 		_expectedMarginalValue = computeExpectedMarginalValue();
 		_expectedThreshold = computeExpectedThreshold();		
 		_logger.debug("Updated expected marginal value of buyer " + _id + " is: " + _expectedMarginalValue + "; expected threshold: " + _expectedThreshold);
-	}
+	}*/
 	
 	/**
 	 * The method solves the consumption problem of the agent given market prices and allocation of DBs.
@@ -246,14 +247,15 @@ public class ParametrizedQuasiLinearAgent
 	public double computeExpectedMarginalValue()
 	{
 		double expectedMarginalValue = 0.;
-		int numberOfDeterministicAllocations = (int)Math.pow(2, _numberOfGoods);
+		//int numberOfDeterministicAllocations = (int)Math.pow(2, _numberOfGoods);
 		
-		for(int detAllocation = 0; detAllocation < numberOfDeterministicAllocations; detAllocation++)
+		expectedMarginalValue = _valueFunction.get(_detAlloc).getMarginalValue();
+		/*for(int detAllocation = 0; detAllocation < numberOfDeterministicAllocations; detAllocation++)
 		{
 			double prob = _allocProbDistribution.probability(detAllocation);
 			expectedMarginalValue += prob * _valueFunction.get(detAllocation).getMarginalValue();
 			//_logger.debug("Agent " + _id + ": updating v' += " + prob + " * " + _valueFunction.get(detAllocation).getMarginalValue());
-		}
+		}*/
 		
 		return expectedMarginalValue;
 	}
@@ -281,13 +283,14 @@ public class ParametrizedQuasiLinearAgent
 	public double computeExpectedThreshold()
 	{
 		double expectedThreshold = 0.;
-		int numberOfDeterministicAllocations = (int)Math.pow(2, _numberOfGoods);
+		//int numberOfDeterministicAllocations = (int)Math.pow(2, _numberOfGoods);
 		
-		for(int detAllocation = 0; detAllocation < numberOfDeterministicAllocations; detAllocation++)
+		expectedThreshold = _valueFunction.get(_detAlloc).getThreshold();
+/*		for(int detAllocation = 0; detAllocation < numberOfDeterministicAllocations; detAllocation++)
 		{
 			double prob = _allocProbDistribution.probability(detAllocation);
 			expectedThreshold += prob * _valueFunction.get(detAllocation).getThreshold();
-		}
+		}*/
 		
 		return expectedThreshold;
 	}
@@ -402,8 +405,10 @@ public class ParametrizedQuasiLinearAgent
 	private int _numberOfGoods;										// Number of goods
 	private List<LinearThresholdValueFunction> _valueFunction;		// Parameterized value function of the consumer. The Integer represents a binary encoding of an allocation of the DBs
 	private double _arrowPrattIdx;									// Risk-aversion measure	
-	private AbstractIntegerDistribution _allocProbDistribution;		// Probability distribution over deterministic allocations
+	//private AbstractIntegerDistribution _allocProbDistribution;		// Probability distribution over deterministic allocations
 	private double _expectedMarginalValue;							// Expected marginal value over deterministic allocation
 	private double _expectedThreshold;								// Expected threshold over deterministic allocation
 	private int _numberOfThreads = 4;								// Number of threads
+	
+	private int _detAlloc;
 }
